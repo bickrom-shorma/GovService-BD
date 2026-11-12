@@ -1,0 +1,28 @@
+
+.service-card {
+  height: 100%;
+  padding: 25px;
+  border: 1px solid #e5eaf0;
+  border-radius: 12px;
+  background: white;
+  transition: 0.3s;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.service-card h5 {
+  color: #1e3a5f;
+  font-weight: 600;
+}
+
+.service-card p {
+  color: #666;
+  font-size: 14px;
+}
+.category-link {
+  text-decoration: none;
+  color: inherit;
+}

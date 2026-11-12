@@ -1,14 +1,31 @@
 
+import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import CategorySection from './components/CategorySection';
+import CategoryServices from './pages/CategoryServices';
+
+function Home() {
+  return (
+    <>
+      <Hero />
+      <CategorySection />
+    </>
+  );
+}
 
 function App() {
   return (
     <>
       <Navbar />
-      <div className="container mt-5">
-        <h1>Welcome to GovService BD</h1>
-        <p>Get Government Services Online</p>
-      </div>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/category/:categoryId"
+          element={<CategoryServices />}
+        />
+      </Routes>
     </>
   );
 }
