@@ -1,5 +1,5 @@
 
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import servicesData from '../data/services';
 import './CategoryServices.css';
 
@@ -9,26 +9,23 @@ function CategoryServices() {
   const category = servicesData[categoryId];
 
   if (!category) {
-    return <h2 className="text-center mt-5">Category Not Found</h2>;
+    return <h2 className="text-center mt-5">Category not found!</h2>;
   }
 
   return (
-    <div className="container py-5">
-      <h2 className="text-center mb-4">
-        {category.title}
-      </h2>
+    <div className="category-services-container">
+      <h2>{category.title}</h2>
 
-      <div className="row g-4">
+      <div className="services-list">
         {category.services.map((service, index) => (
-          <div className="col-md-6 col-lg-4" key={index}>
-            <div className="service-card">
-              <h5>{service}</h5>
-              <p>View service requirements and application guide.</p>
-              <button className="btn btn-primary">
-                View Details
-              </button>
-            </div>
-          </div>
+          <Link
+            to={`/category/${categoryId}/service/${index}`}
+            key={index}
+            className="service-card"
+          >
+            <span>{service}</span>
+            <span>View Details →</span>
+          </Link>
         ))}
       </div>
     </div>
