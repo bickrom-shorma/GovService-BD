@@ -1,49 +1,97 @@
 
-function Navbar() {
-  return (
-    <nav className="navbar navbar-expand-lg bg-white shadow-sm px-4">
-      <div className="container-fluid">
+import { useState } from 'react';
+import { NavLink, Link } from 'react-router-dom';
+import './Navbar.css';
 
-        <a className="navbar-brand fw-bold text-primary" href="/">
-          GovService BD
-        </a>
+function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [language, setLanguage] = useState('English');
+
+  const closeMenu = () => setMenuOpen(false);
+
+  return (
+    <nav className="main-navbar">
+      <div className="navbar-container">
+
+        <Link to="/" className="navbar-brand" onClick={closeMenu}>
+          <span className="brand-icon">🏛️</span>
+          <span>GovService BD</span>
+        </Link>
 
         <button
-          className="navbar-toggler"
+          className="navbar-toggle"
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarMenu"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle navigation"
+          aria-expanded={menuOpen}
         >
-          <span className="navbar-toggler-icon"></span>
+          ☰
         </button>
 
-        <div className="collapse navbar-collapse" id="navbarMenu">
-          <ul className="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+        <div className={`navbar-menu ${menuOpen ? 'show' : ''}`}>
 
-            <li className="nav-item">
-              <a className="nav-link active" href="/">Home</a>
-            </li>
+          <div className="navbar-links">
 
-            <li className="nav-item">
-              <a className="nav-link" href="/services">Services</a>
-            </li>
+            <NavLink
+              to="/"
+              end
+              className={({ isActive }) =>
+                `navbar-link ${isActive ? 'active' : ''}`
+              }
+              onClick={closeMenu}
+            >
+              Home
+            </NavLink>
 
-            <li className="nav-item">
-              <a className="nav-link" href="/my-documents">My Documents</a>
-            </li>
+            <NavLink
+              to="/"
+              className="navbar-link"
+              onClick={closeMenu}
+            >
+              Services
+            </NavLink>
 
-            <li className="nav-item">
-              <a className="nav-link" href="/login">Login</a>
-            </li>
+            <NavLink
+              to="/my-documents"
+              className={({ isActive }) =>
+                `navbar-link ${isActive ? 'active' : ''}`
+              }
+              onClick={closeMenu}
+            >
+              My Documents
+            </NavLink>
 
-            <li className="nav-item">
-              <select className="form-select form-select-sm">
-                <option>English</option>
-                <option>বাংলা</option>
-              </select>
-            </li>
+          </div>
 
-          </ul>
+          <div className="navbar-actions">
+
+            <select
+              className="language-select"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              aria-label="Select language"
+            >
+              <option value="বাংলা">বাংলা</option>
+              <option value="English">English</option>
+            </select>
+
+            <Link
+              to="/login"
+              className="login-button"
+              onClick={closeMenu}
+            >
+              Login
+            </Link>
+
+            <Link
+              to="/register"
+              className="register-button"
+              onClick={closeMenu}
+            >
+              Register
+            </Link>
+
+          </div>
         </div>
       </div>
     </nav>

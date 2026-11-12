@@ -1,5 +1,10 @@
-import { useParams } from 'react-router-dom';
+
+import { useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+
 import servicesData from '../data/services';
+import serviceDetailsData from '../data/serviceDetailsData';
+
 import './ServiceDetails.css';
 
 function ServiceDetails() {
@@ -8,43 +13,185 @@ function ServiceDetails() {
   const category = servicesData[categoryId];
   const service = category?.services?.[Number(serviceIndex)];
 
+  const [activeTab, setActiveTab] = useState('overview');
+
   if (!service) {
     return <h2 className="text-center mt-5">Service not found!</h2>;
   }
 
+  const serviceKey = `${categoryId}-${serviceIndex}`;
+  const details = serviceDetailsData[serviceKey];
+
+  const renderContent = () => {
+    if (!details) {
+      return (
+        <>
+          <h3>Information Coming Soon</h3>
+          <p>
+            Verified information for this service will be added soon.
+          </p>
+        </>
+      );
+    }
+
+    switch (activeTab) {
+      case 'overview':
+        return (
+          <>
+            <h3>Overview</h3>
+            <p>{details.overview}</p>
+          </>
+        );
+
+      case 'documents':
+        return (
+          <>
+            <h3>Required Documents</h3>
+            <p>Please prepare the following documents:</p>
+
+            <ul className="service-information-list">
+              {details.requiredDocuments.map((document, index) => (
+                <li key={index}>{document}</li>
+              ))}
+            </ul>
+          </>
+        );
+
+      case 'guidelines':
+        return (
+          <>
+            <h3>Application Guidelines</h3>
+
+            <div className="application-guideline-section">
+              <h4>Online Application Process</h4>
+              <p>Follow these steps to apply online:</p>
+
+              <ol className="service-information-list">
+                {details.applicationSteps.online.map((step, index) => (
+                  <li key={index}>{step}</li>
+                ))}
+              </ol>
+            </div>
+
+            <div className="application-guideline-section">
+              <h4>Offline Application Process</h4>
+              <p>Follow these steps to apply directly through a government office:</p>
+
+              <ol className="service-information-list">
+                {details.applicationSteps.offline.map((step, index) => (
+                  <li key={index}>{step}</li>
+                ))}
+              </ol>
+            </div>
+          </>
+        );
+
+      case 'official':
+        return (
+          <>
+            <h3>Official Application Form</h3>
+            <p>
+              Apply through the official government portal.
+            </p>
+
+            <a
+              href={details.officialLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="official-link-button"
+            >
+              Visit Official Application Portal ↗
+            </a>
+          </>
+        );
+
+      case 'offices':
+        return (
+          <>
+            <h3>Government Office Information</h3>
+            <p>{details.officeInformation}</p>
+          </>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="service-details-container">
-      <h2>{service}</h2>
 
-      <section className="details-section">
-        <h4>Required Documents</h4>
-        <p>Required documents will be added here.</p>
-      </section>
+      <Link to={`/category/${categoryId}`} className="back-link">
+        ← Back to Services
+      </Link>
 
-      <section className="details-section">
-        <h4>Estimated Cost</h4>
-        <p>Cost information will be added here.</p>
-      </section>
+      <div className="service-details-heading">
+        <div className="service-heading-icon">📄</div>
 
-      <section className="details-section">
-        <h4>Processing Time</h4>
-        <p>Processing time will be added here.</p>
-      </section>
+        <div>
+          <h2>{service}</h2>
+          <p>
+            Get information and guidance for this government service.
+          </p>
+        </div>
+      </div>
 
-      <section className="details-section">
-        <h4>Government Office Information</h4>
-        <p>Government office information will be added here.</p>
-      </section>
+      <div className="service-info-cards">
 
-      <section className="details-section">
-        <h4>Official Application Link</h4>
-        <p>Official link will be added here.</p>
-      </section>
+        <div className="info-card">
+          <span>💰</span>
+          <div>
+            <small>Estimated Cost</small>
+            <h4>{details?.estimatedCost || 'To be verified'}</h4>
+          </div>
+        </div>
 
-      <section className="details-section">
-        <h4>Step-by-step Application Guide</h4>
-        <p>Application steps will be added here.</p>
-      </section>
+        <div className="info-card">
+          <span>◷</span>
+          <div>
+            <small>Processing Time</small>
+            <h4>{details?.processingTime || 'To be verified'}</h4>
+          </div>
+        </div>
+
+        <div className="info-card">
+          <span>🏢</span>
+          <div>
+            <small>Relevant Office</small>
+            <h4>{details?.relevantOffice || 'To be verified'}</h4>
+          </div>
+        </div>
+
+      </div>
+
+      <div className="service-details-layout">
+
+        <aside className="details-sidebar">
+
+          {[
+            { id: 'overview', icon: '◉', label: 'Overview' },
+            { id: 'documents', icon: '▣', label: 'Required Documents' },
+            { id: 'guidelines', icon: '☷', label: 'Application Guidelines' },
+            { id: 'official', icon: '↗', label: 'Official Form Link' },
+            { id: 'offices', icon: '⌖', label: 'Nearby Offices' },
+          ].map((item) => (
+            <button
+              key={item.id}
+              className={activeTab === item.id ? 'active' : ''}
+              onClick={() => setActiveTab(item.id)}
+            >
+              <span>{item.icon}</span>
+              {item.label}
+            </button>
+          ))}
+
+        </aside>
+
+        <main className="details-content-panel">
+          {renderContent()}
+        </main>
+
+      </div>
     </div>
   );
 }
