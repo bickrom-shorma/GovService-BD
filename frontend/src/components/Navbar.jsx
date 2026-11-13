@@ -13,21 +13,26 @@ function Navbar() {
     <nav className="main-navbar">
       <div className="navbar-container">
 
+        {/* Brand Logo */}
         <Link to="/" className="navbar-brand" onClick={closeMenu}>
           <span className="brand-icon">🏛️</span>
-          <span>GovService BD</span>
+          <span className="brand-text">
+            GovService <span>BD</span>
+          </span>
         </Link>
 
+        {/* Mobile Menu Button */}
         <button
-          className="navbar-toggle"
+          className={`navbar-toggle ${menuOpen ? 'open' : ''}`}
           type="button"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle navigation"
           aria-expanded={menuOpen}
         >
-          ☰
+          {menuOpen ? '✕' : '☰'}
         </button>
 
+        {/* Navigation Menu */}
         <div className={`navbar-menu ${menuOpen ? 'show' : ''}`}>
 
           <div className="navbar-links">
@@ -45,6 +50,7 @@ function Navbar() {
 
             <NavLink
               to="/"
+              end
               className="navbar-link"
               onClick={closeMenu}
             >
@@ -65,16 +71,22 @@ function Navbar() {
 
           <div className="navbar-actions">
 
-            <select
-              className="language-select"
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              aria-label="Select language"
-            >
-              <option value="বাংলা">বাংলা</option>
-              <option value="English">English</option>
-            </select>
+            {/* Language Selector */}
+            <div className="language-wrapper">
+              <span className="language-icon">🌐</span>
 
+              <select
+                className="language-select"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                aria-label="Select language"
+              >
+                <option value="English">English</option>
+                <option value="বাংলা">বাংলা</option>
+              </select>
+            </div>
+
+            {/* Authentication Buttons */}
             <Link
               to="/login"
               className="login-button"
