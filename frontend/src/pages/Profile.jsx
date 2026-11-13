@@ -566,34 +566,72 @@ case 'My Feedback & Reports': {
   );
 }
 
-      case 'Account Settings':
-        return (
-          <div className="account-section">
-            <h2>Account Settings</h2>
-            <p>Manage your account preferences and security settings.</p>
+     
+case 'Account Settings':
+  return (
+    <div className="account-section">
+      <h2>Account Settings</h2>
+      <p>Manage your account preferences and security settings.</p>
 
-            <div className="settings-item">
-              <div>
-                <h3>Account Information</h3>
-                <p>Manage your personal account information.</p>
-              </div>
-              <button
-                className="settings-link"
-                onClick={() => setActiveSection('Personal Information')}
-              >
-                Manage
-              </button>
-            </div>
+      <div className="settings-item">
+        <div>
+          <h3>Account Information</h3>
+          <p>Manage your personal account information.</p>
+        </div>
 
-            <div className="settings-item">
-              <div>
-                <h3>Change Password</h3>
-                <p>Update your account password.</p>
-              </div>
-              <span className="settings-status">Coming Soon</span>
-            </div>
-          </div>
-        );
+        <button
+          className="settings-link"
+          onClick={() => setActiveSection('Personal Information')}
+        >
+          Manage
+        </button>
+      </div>
+
+      <div className="settings-item">
+        <div>
+          <h3>Change Password</h3>
+          <p>Update your account password for better security.</p>
+        </div>
+      </div>
+
+      <form
+        className="feedback-form password-form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          alert('Password change will be connected with backend later.');
+          e.target.reset();
+        }}
+      >
+        <label>Current Password</label>
+        <input
+          type="password"
+          placeholder="Enter current password"
+          required
+        />
+
+        <label>New Password</label>
+        <input
+          type="password"
+          placeholder="Enter new password"
+          minLength="6"
+          required
+        />
+
+        <label>Confirm New Password</label>
+        <input
+          type="password"
+          placeholder="Confirm new password"
+          minLength="6"
+          required
+        />
+
+        <button type="submit" className="account-action-button">
+          Update Password
+        </button>
+      </form>
+    </div>
+  );
+
 
       default:
         return null;
