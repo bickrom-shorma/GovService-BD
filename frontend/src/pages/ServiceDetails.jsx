@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
 import servicesData from '../data/services';
@@ -14,13 +14,58 @@ function ServiceDetails() {
   const service = category?.services?.[Number(serviceIndex)];
 
   const [activeTab, setActiveTab] = useState('overview');
+  const [isSaved, setIsSaved] = useState(false);
+
+  const serviceKey = `${categoryId}-${serviceIndex}`;
+
+  useEffect(() => {
+    const savedServices = JSON.parse(
+      localStorage.getItem('savedServices') || '[]'
+    );
+
+    setIsSaved(savedServices.some((item) => item.id === serviceKey));
+  }, [serviceKey]);
 
   if (!service) {
     return <h2 className="text-center mt-5">Service not found!</h2>;
   }
 
-  const serviceKey = `${categoryId}-${serviceIndex}`;
   const details = serviceDetailsData[serviceKey];
+
+  const handleSaveService = () => {
+    const savedServices = JSON.parse(
+      localStorage.getItem('savedServices') || '[]'
+    );
+
+    const alreadySaved = savedServices.some(
+      (item) => item.id === serviceKey
+    );
+
+    let updatedServices;
+
+    if (alreadySaved) {
+      updatedServices = savedServices.filter(
+        (item) => item.id !== serviceKey
+      );
+      setIsSaved(false);
+    } else {
+      updatedServices = [
+        ...savedServices,
+        {
+          id: serviceKey,
+          categoryId,
+          serviceIndex: Number(serviceIndex),
+          serviceName: service,
+          categoryName: category.title,
+        },
+      ];
+      setIsSaved(true);
+    }
+
+    localStorage.setItem('savedServices', JSON.stringify(updatedServices));
+
+    window.dispatchEvent(new Event('savedServicesUpdated'));
+  };
 
   const renderContent = () => {
     if (!details) {
@@ -75,7 +120,9 @@ function ServiceDetails() {
 
             <div className="application-guideline-section">
               <h4>Offline Application Process</h4>
-              <p>Follow these steps to apply directly through a government office:</p>
+              <p>
+                Follow these steps to apply directly through a government office:
+              </p>
 
               <ol className="service-information-list">
                 {details.applicationSteps.offline.map((step, index) => (
@@ -135,6 +182,14 @@ function ServiceDetails() {
           </p>
         </div>
       </div>
+
+      <button
+        type="button"
+        className={`save-service-button ${isSaved ? 'saved' : ''}`}
+        onClick={handleSaveService}
+      >
+        {isSaved ? '★ Saved' : '☆ Save Service'}
+      </button>
 
       <div className="service-info-cards">
 

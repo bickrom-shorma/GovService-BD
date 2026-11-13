@@ -1,0 +1,550 @@
+
+.account-container {
+  display: flex;
+  width: 100%;
+  min-height: 85vh;
+  background: #f5f7fb;
+}
+
+/* Sidebar */
+
+.account-sidebar {
+  width: 270px;
+  flex-shrink: 0;
+  background: #fff;
+  padding: 25px 18px;
+  border-right: 1px solid #e5e9f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-sidebar > h2 {
+  color: #075ed8;
+  font-size: 23px;
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
+.account-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 10px;
+  background: #f2f6fc;
+  border-radius: 10px;
+  margin-bottom: 22px;
+}
+
+.account-avatar,
+.overview-avatar {
+  width: 45px;
+  height: 45px;
+  background: #dceaff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
+  flex-shrink: 0;
+}
+
+.account-user h4 {
+  font-size: 15px;
+  margin: 0;
+  color: #222;
+}
+
+.account-user p {
+  font-size: 12px;
+  color: #777;
+  margin: 4px 0 0;
+}
+
+/* Sidebar Menu */
+
+.account-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.account-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 13px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #555;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.account-menu-item:hover {
+  background: #f0f5ff;
+  color: #075ed8;
+}
+
+.account-menu-item.active {
+  background: #e8f1ff;
+  color: #075ed8;
+  font-weight: 600;
+}
+
+.account-logout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  margin-top: auto;
+  color: #dc3545;
+  text-decoration: none;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.account-logout:hover {
+  background: #fff0f1;
+  color: #c82333;
+}
+
+/* Main Content */
+
+.account-main {
+  flex: 1;
+  min-width: 0;
+  padding: 30px;
+}
+
+.account-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e5e9f0;
+}
+
+.account-topbar h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #222;
+  margin: 0;
+}
+
+.account-topbar span {
+  color: #777;
+  font-size: 14px;
+}
+
+/* Overview */
+
+.account-overview h2,
+.account-section h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 10px;
+}
+
+.account-overview > p,
+.account-section > p {
+  color: #777;
+  font-size: 15px;
+  margin-bottom: 25px;
+}
+
+.overview-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #e8edf4;
+  margin-bottom: 25px;
+}
+
+.overview-avatar {
+  width: 55px;
+  height: 55px;
+  font-size: 27px;
+}
+
+.overview-profile-card h3 {
+  margin: 0 0 5px;
+  font-size: 18px;
+  color: #333;
+}
+
+.overview-profile-card p {
+  color: #777;
+  font-size: 14px;
+}
+
+.overview-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.overview-card {
+  background: #fff;
+  padding: 23px 20px;
+  border-radius: 10px;
+  border: 1px solid #e8edf4;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.03);
+  transition: 0.3s;
+  text-align: left;
+  cursor: pointer;
+}
+
+.overview-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+}
+
+.overview-card > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: #e8f1ff;
+  border-radius: 10px;
+  font-size: 23px;
+  margin-bottom: 15px;
+}
+
+.overview-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 9px;
+}
+
+.overview-card p {
+  color: #777;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Section */
+
+.account-section {
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  border: 1px solid #e8edf4;
+}
+
+.account-section > h2 {
+  margin-bottom: 10px;
+}
+
+.account-empty-state {
+  text-align: center;
+  padding: 45px 20px;
+  background: #f8faff;
+  border: 1px dashed #d5deed;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.account-empty-state > span {
+  font-size: 38px;
+}
+
+.account-empty-state h3 {
+  color: #333;
+  font-size: 18px;
+  margin: 15px 0 8px;
+}
+
+.account-empty-state p {
+  color: #777;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 480px;
+  margin: 0 auto 18px;
+}
+
+.account-action-link {
+  display: inline-block;
+  background: #075ed8;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.account-action-link:hover {
+  background: #064bb0;
+}
+
+/* Personal Information */
+
+.profile-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.profile-section-header p {
+  color: #777;
+  font-size: 14px;
+}
+
+.profile-form {
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.profile-form-group label,
+.feedback-form label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.profile-form-group input,
+.profile-form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d5dce5;
+  border-radius: 7px;
+  outline: none;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.profile-form-group input:focus,
+.profile-form-group textarea:focus {
+  border-color: #075ed8;
+  box-shadow: 0 0 0 3px rgba(7, 94, 216, 0.1);
+}
+
+.profile-form-group input:disabled,
+.profile-form-group textarea:disabled {
+  background: #f5f7fb;
+  color: #555;
+  cursor: not-allowed;
+}
+
+.profile-form-group textarea {
+  resize: vertical;
+}
+
+.profile-form-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Buttons */
+
+.account-action-button {
+  width: fit-content;
+  padding: 12px 25px;
+  background: #075ed8;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.account-action-button:hover {
+  background: #064bb0;
+}
+
+.profile-cancel-button {
+  padding: 12px 25px;
+  background: #e9ecef;
+  color: #333;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+/* Feedback Form */
+
+.feedback-form {
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.feedback-form input,
+.feedback-form select,
+.feedback-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d5dce5;
+  border-radius: 7px;
+  outline: none;
+  font-size: 14px;
+  font-family: inherit;
+  margin-bottom: 10px;
+}
+
+.feedback-form input:focus,
+.feedback-form select:focus,
+.feedback-form textarea:focus {
+  border-color: #075ed8;
+  box-shadow: 0 0 0 3px rgba(7, 94, 216, 0.1);
+}
+
+.feedback-form textarea {
+  resize: vertical;
+}
+
+/* Saved Services */
+
+.saved-services-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.saved-service-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #f8faff;
+  border: 1px solid #e8edf4;
+  border-radius: 8px;
+}
+
+.saved-service-item button {
+  border: none;
+  background: #fff0f1;
+  color: #dc3545;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Account Settings */
+
+.settings-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 18px 0;
+  border-bottom: 1px solid #e8edf4;
+}
+
+.settings-item h3 {
+  color: #333;
+  font-size: 16px;
+  margin: 0 0 6px;
+}
+
+.settings-item p {
+  color: #777;
+  font-size: 13px;
+}
+
+.settings-link {
+  border: none;
+  background: #e8f1ff;
+  color: #075ed8;
+  padding: 9px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.settings-status {
+  font-size: 12px;
+  color: #888;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+  .overview-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .account-container {
+    flex-direction: column;
+  }
+
+  .account-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e5e9f0;
+  }
+
+  .account-menu {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .account-logout {
+    margin-top: 15px;
+  }
+
+  .account-main {
+    padding: 22px 16px;
+  }
+
+  .overview-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .account-topbar h2 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 500px) {
+  .profile-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .account-menu {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-form-actions {
+    flex-direction: column;
+  }
+
+  .profile-form-actions button {
+    width: 100%;
+  }
+
+  .saved-service-item {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+}

@@ -250,3 +250,29 @@
   margin-bottom: 10px;
 }
 
+
+.save-service-button {
+  display: inline-block;
+  margin: 18px 0;
+  padding: 10px 22px;
+  border: 1px solid #2563eb;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #2563eb;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.save-service-button:hover {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.save-service-button.saved {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+
