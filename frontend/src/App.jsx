@@ -10,6 +10,7 @@ import ServiceDetails from './pages/ServiceDetails';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
+import MyDocuments from './pages/MyDocuments';
 
 function Home() {
   return (
@@ -41,6 +42,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/my-documents" element={<MyDocuments />} />
       </Routes>
     </>
   );

@@ -412,83 +412,159 @@ case 'My Document Checklist':
     </div>
   );
 
-      case 'My Downloads':
-        return (
-          <div className="account-section">
-            <h2>My Downloads</h2>
-            <p>Access your downloaded documents and files.</p>
+     
+case 'My Downloads': {
+  const downloadHistory = JSON.parse(
+    localStorage.getItem('downloadHistory') || '[]'
+  );
 
-            <div className="account-empty-state">
-              <span>📁</span>
-              <h3>No Downloads Yet</h3>
-              <p>
-                Your downloaded documents will appear here.
-              </p>
+  return (
+    <div className="account-section">
+      <h2>My Downloads</h2>
+      <p>Access your downloaded documents and files.</p>
+
+      {downloadHistory.length === 0 ? (
+        <div className="account-empty-state">
+          <span>📁</span>
+          <h3>No Downloads Yet</h3>
+          <p>
+            Your downloaded documents will appear here.
+          </p>
+        </div>
+      ) : (
+        <div className="downloads-list">
+          {downloadHistory.map((item) => (
+            <div className="download-item" key={item.id}>
+              <div>
+                <h4>📄 {item.name}</h4>
+                <p>
+                  Downloaded: {item.date}
+                </p>
+              </div>
+
+              <a href={item.url} download={item.name}>
+                Download Again
+              </a>
             </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+      
+case 'My Feedback & Reports': {
+  const feedbackHistory = JSON.parse(
+    localStorage.getItem('feedbackHistory') || '[]'
+  );
+
+  const handleFeedbackSubmit = (e) => {
+    e.preventDefault();
+
+    const newFeedback = {
+      id: `${Date.now()}`,
+      type: feedback.type,
+      subject: feedback.subject,
+      message: feedback.message,
+      date: new Date().toLocaleString(),
+    };
+
+    const updatedHistory = [
+      newFeedback,
+      ...feedbackHistory,
+    ];
+
+    localStorage.setItem(
+      'feedbackHistory',
+      JSON.stringify(updatedHistory)
+    );
+
+    setFeedback({
+      type: '',
+      subject: '',
+      message: '',
+    });
+
+    alert('Your feedback has been submitted successfully!');
+  };
+
+  return (
+    <div className="account-section">
+      <h2>My Feedback & Reports</h2>
+      <p>Share your feedback or report a problem.</p>
+
+      <form
+        className="feedback-form"
+        onSubmit={handleFeedbackSubmit}
+      >
+        <label>Feedback Type</label>
+        <select
+          value={feedback.type}
+          onChange={(e) =>
+            setFeedback({ ...feedback, type: e.target.value })
+          }
+          required
+        >
+          <option value="">Select a type</option>
+          <option value="feedback">General Feedback</option>
+          <option value="suggestion">Suggestion</option>
+          <option value="report">Report a Problem</option>
+        </select>
+
+        <label>Subject</label>
+        <input
+          type="text"
+          value={feedback.subject}
+          onChange={(e) =>
+            setFeedback({ ...feedback, subject: e.target.value })
+          }
+          placeholder="Enter subject"
+          required
+        />
+
+        <label>Message</label>
+        <textarea
+          rows="5"
+          value={feedback.message}
+          onChange={(e) =>
+            setFeedback({ ...feedback, message: e.target.value })
+          }
+          placeholder="Write your feedback or report..."
+          required
+        />
+
+        <button type="submit" className="account-action-button">
+          Submit Feedback
+        </button>
+      </form>
+
+      <div className="feedback-history">
+        <h3>My Submitted Feedback</h3>
+
+        {feedbackHistory.length === 0 ? (
+          <div className="account-empty-state">
+            <span>📝</span>
+            <h3>No Feedback Submitted Yet</h3>
+            <p>Your submitted feedback and reports will appear here.</p>
           </div>
-        );
-
-      case 'My Feedback & Reports':
-        return (
-          <div className="account-section">
-            <h2>My Feedback & Reports</h2>
-            <p>Share your feedback or report a problem.</p>
-
-            <form
-              className="feedback-form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                alert('Feedback will be connected with backend later.');
-
-                setFeedback({
-                  type: '',
-                  subject: '',
-                  message: '',
-                });
-              }}
-            >
-              <label>Feedback Type</label>
-              <select
-                value={feedback.type}
-                onChange={(e) =>
-                  setFeedback({ ...feedback, type: e.target.value })
-                }
-                required
-              >
-                <option value="">Select a type</option>
-                <option value="feedback">General Feedback</option>
-                <option value="suggestion">Suggestion</option>
-                <option value="report">Report a Problem</option>
-              </select>
-
-              <label>Subject</label>
-              <input
-                type="text"
-                value={feedback.subject}
-                onChange={(e) =>
-                  setFeedback({ ...feedback, subject: e.target.value })
-                }
-                placeholder="Enter subject"
-                required
-              />
-
-              <label>Message</label>
-              <textarea
-                rows="5"
-                value={feedback.message}
-                onChange={(e) =>
-                  setFeedback({ ...feedback, message: e.target.value })
-                }
-                placeholder="Write your feedback or report..."
-                required
-              />
-
-              <button type="submit" className="account-action-button">
-                Submit Feedback
-              </button>
-            </form>
-          </div>
-        );
+        ) : (
+          feedbackHistory.map((item) => (
+            <div className="feedback-history-item" key={item.id}>
+              <h4>{item.subject}</h4>
+              <p>
+                **Type:** {item.type}
+              </p>
+              <p>{item.message}</p>
+              <small>{item.date}</small>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
 
       case 'Account Settings':
         return (
