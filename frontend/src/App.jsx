@@ -7,6 +7,8 @@ import CategorySection from './components/CategorySection';
 
 import CategoryServices from './pages/CategoryServices';
 import ServiceDetails from './pages/ServiceDetails';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 function Home() {
   return (
@@ -23,20 +25,20 @@ function App() {
       <Navbar />
 
       <Routes>
-        {/* Home Page */}
         <Route path="/" element={<Home />} />
 
-        {/* Category Services Page */}
         <Route
           path="/category/:categoryId"
           element={<CategoryServices />}
         />
 
-        {/* Service Details Page */}
         <Route
           path="/category/:categoryId/service/:serviceIndex"
           element={<ServiceDetails />}
         />
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </>
   );
