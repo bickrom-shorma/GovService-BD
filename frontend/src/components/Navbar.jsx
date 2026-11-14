@@ -37,6 +37,7 @@ function Navbar() {
 
           <div className="navbar-links">
 
+            {/* Home */}
             <NavLink
               to="/"
               end
@@ -48,6 +49,7 @@ function Navbar() {
               Home
             </NavLink>
 
+            {/* Services */}
             <NavLink
               to="/"
               end
@@ -57,6 +59,18 @@ function Navbar() {
               Services
             </NavLink>
 
+            {/* AI Assistant */}
+            <NavLink
+              to="/ai-assistant"
+              className={({ isActive }) =>
+                `navbar-link ${isActive ? 'active' : ''}`
+              }
+              onClick={closeMenu}
+            >
+              AI Assistant
+            </NavLink>
+
+            {/* My Documents */}
             <NavLink
               to="/my-documents"
               className={({ isActive }) =>
