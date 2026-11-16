@@ -4,12 +4,17 @@ const cors = require('cors');
 require('dotenv').config();
 
 const db = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+// Authentication Routes
+app.use('/api/auth', authRoutes);
+
+// Home Route
 app.get('/', (req, res) => {
   res.send('GovService-BD Backend Server is Running!');
 });
