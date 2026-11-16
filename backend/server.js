@@ -1,4 +1,4 @@
-
+const userRoutes = require('./routes/userRoutes');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -13,6 +13,8 @@ app.use(express.json());
 
 // Authentication Routes
 app.use('/api/auth', authRoutes);
+// User Profile Routes
+app.use('/api/users', userRoutes);
 
 // Home Route
 app.get('/', (req, res) => {
