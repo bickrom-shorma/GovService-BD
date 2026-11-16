@@ -26,26 +26,45 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official Bangladesh NID Services website.',
-        'Choose the new voter registration option and follow the application instructions.',
-        'Enter your personal information, family details and address carefully.',
-        'Review all information before submitting the application.',
-        'Save or print the application form and follow the instructions provided by the portal.',
-        'Visit the relevant Election Office with your application and supporting documents when instructed.',
-        'Complete biometric data collection, including photograph, fingerprints and other required information.',
-        'Wait for document verification and application approval.',
-        'After approval, follow the official instructions to obtain or download your NID.'
+        'Open the official NID Application System: https://services.nidw.gov.bd/nid-pub/ and choose the new voter registration/application option available on the portal.',
+
+        'Read the eligibility instructions first. Apply only if you are a Bangladeshi citizen eligible to be registered and have not already been registered as a voter; duplicate registration is an offence.',
+
+        'Complete the application using the information shown on your birth registration and other official records. Enter your Bangla and English name, date of birth, parents’ details, marital status, occupation and other requested information accurately.',
+
+        'Fill in your present and permanent address, including division, district, upazila or thana, union or ward and other address details requested by the form.',
+
+        'Review every field carefully before final submission. Correct spelling differences and date errors before submitting; keep a note of the application number or reference.',
+
+        'Download or print the completed application form if the portal provides it. Prepare original documents and clear photocopies, such as birth registration, educational certificate if available, parents’ NID information and acceptable address evidence.',
+
+        'Contact or visit the relevant Upazila/Thana Election Office to confirm the document-submission and biometric schedule. Bring the printed application and original supporting documents when instructed.',
+
+        'Attend the assigned registration session. Election officials verify your documents and capture your photograph, fingerprints, iris scan and signature/other biometric details as required.',
+
+        'Respond promptly if the Election Office asks for clarification, additional evidence or a field verification. Do not submit a second application while the first is pending.',
+
+        'Track the application through the official portal or the Election Office. After approval and registration, follow the portal instructions to create/access your account and download the available NID copy.'
       ],
 
       offline: [
-        'Visit your local Upazila or Thana Election Office.',
-        'Ask the responsible officer about new voter registration.',
-        'Collect or complete the required registration form.',
-        'Provide accurate personal, family and address information.',
-        'Submit the completed form with the necessary supporting documents.',
-        'Attend the scheduled verification and biometric collection process.',
-        'Wait for the Election Commission to verify your information.',
-        'Follow the office instructions to receive your NID.'
+        'Visit the Upazila or Thana Election Office responsible for your present/permanent area and tell the help desk that you want to register as a new voter.',
+
+        'Ask the officer to confirm your eligibility, whether your information is already in the voter database, the current registration procedure and the required documents.',
+
+        'Obtain the prescribed voter registration form (Form-2, where applicable) from the Election Office or the Election Commission’s official forms page. Do not use an unofficial form.',
+
+        'Complete the form in clear writing. Match your name, date of birth, parents’ names and address with official records; provide all requested family and residence information.',
+
+        'Arrange the supporting documents requested by the office. Common evidence includes birth registration, educational certificate if available, parents’ NID details and proof of residence. Requirements can differ by case.',
+
+        'Submit the completed form and supporting papers to the designated officer. Ask whether any additional form or local verification is needed and keep an acknowledgement/reference if issued.',
+
+        'Attend the date and location given by the Election Office for document checking and biometric enrolment. Bring originals for comparison; officials capture the required biometrics.',
+
+        'Cooperate with any address or identity verification and provide further documents if requested. Do not attempt a second registration if your application is already under review.',
+
+        'Follow up with the Election Office or official NID portal. Once the Election Commission approves the registration, use the official instructions to access or download your NID.'
       ]
     },
 
@@ -77,27 +96,43 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official NID Services website.',
-        'Log in to your NID account using your registered information.',
-        'Select the reissue or replacement option.',
-        'Choose the appropriate reason, such as a lost or damaged NID card.',
-        'Review the displayed information and follow the portal instructions.',
-        'Pay the applicable reissue fee using an available payment method.',
-        'Submit the reissue application.',
-        'Keep the application reference and payment information.',
-        'Wait for the Election Commission to review and approve your application.',
-        'After approval, follow the portal instructions to download or collect your NID.'
+        'Open the official NID Services portal and sign in to the account linked to your existing NID.',
+
+        'From the account dashboard, choose the reissue/reprint service. The portal FAQ directs lost-card holders to apply online for reissue.',
+
+        'Select the reason accurately, such as lost or damaged card, and enter the details requested. If the card is lost, provide the available NID number and any incident information requested.',
+
+        'Check the displayed identity information and confirm that you are requesting a replacement of the existing record, not a new NID registration.',
+
+        'Review the fee shown by the official fee calculator/payment screen. The payable amount depends on the applicable reissue category; do not rely on an old fee quoted elsewhere.',
+
+        'Pay through a payment channel displayed by the portal and retain the transaction ID/receipt.',
+
+        'Submit the application and save the application/reference number and payment evidence.',
+
+        'Monitor the portal and registered mobile/email for a decision or request for further verification. Provide additional information if the Election Commission asks.',
+
+        'After approval, sign in again and use the available download/reprint option, or follow the office instructions if physical collection is required.'
       ],
 
       offline: [
-        'Visit your local Upazila or Thana Election Office.',
-        'Explain that your NID card is lost or damaged and that you need a reissue.',
-        'Provide your NID number or other available identity information.',
-        'Collect or complete the required reissue application form if instructed.',
-        'Submit the application with any supporting documents requested by the office.',
-        'Pay the applicable fee according to the official instructions.',
-        'Keep the payment receipt and application reference.',
-        'Follow the office instructions and collect or download your reissued NID after approval.'
+        'Visit the Upazila/Thana Election Office or NID service point responsible for your area. Explain whether the card is lost, damaged or unusable.',
+
+        'Provide your NID number or other details that help the officer locate your existing record. Bring another identity document if available.',
+
+        'Ask the officer to confirm the correct reissue category, current fee and whether a GD/police report or other supporting evidence is required for your circumstances.',
+
+        'Complete the prescribed reissue/reprint application or obtain assistance to submit it through the official NID system, as directed by the office.',
+
+        'Submit the requested identity evidence and any supporting document. If the card is damaged, take the damaged card with you if the office asks for it.',
+
+        'Pay the fee using the official payment instruction and keep the receipt or transaction reference.',
+
+        'Collect an acknowledgement or application reference and ask how to check the decision.',
+
+        'Follow up with the Election Office if additional verification is required.',
+
+        'After approval, download the available NID copy or collect the replacement according to the official instructions.'
       ]
     },
 
@@ -106,8 +141,7 @@ const serviceDetailsData = {
     officeInformation:
       'NID reissue applications are processed by the Bangladesh Election Commission. Applicants can use the official NID portal or contact their local Upazila or Thana Election Office for assistance. The required fee depends on the reissue category.'
   },
-
-  'nid-2': {
+    'nid-2': {
     overview:
       'If any personal information on your National Identity Card is incorrect, you can apply for an information correction. Corrections may include your name, parents’ names, address or other recorded information. You must provide reliable supporting documents that prove the correct information. The Election Commission reviews the application and may request additional documents or verification before approving the correction.',
 
@@ -131,30 +165,33 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official NID Services portal.',
-        'Log in to your NID account.',
-        'Choose the information correction option.',
-        'Select the information that needs to be corrected.',
-        'Enter the correct information carefully.',
-        'Upload clear copies of the required supporting documents.',
-        'Review the application and check that the information is accurate.',
-        'Pay the applicable correction fee through the available payment method.',
-        'Submit the application and save the reference information.',
-        'Respond to any additional document or verification request from the Election Commission.',
-        'After approval, follow the portal instructions to obtain your corrected NID.'
+        'Visit the official NID Services portal: https://services.nidw.gov.bd/nid-pub/ and sign in to your account.',
+        'Open the profile or application dashboard and select the information correction option.',
+        'Identify the exact information that needs correction, such as your name, parents’ names, address or other recorded details.',
+        'Enter the correct information exactly as it appears in your supporting official documents.',
+        'Upload clear and readable copies of the documents that support each requested correction.',
+        'For name or family information corrections, provide relevant educational certificates, birth registration documents or parents’ identity records as applicable.',
+        'Check the entire application carefully. Make sure the requested correction matches the uploaded evidence.',
+        'Use the official payment option to pay the fee displayed for your correction category.',
+        'Submit the application and save the application number, payment receipt and other reference information.',
+        'Monitor your NID account and registered contact number for additional document requests or verification instructions.',
+        'If the authority requests an interview, hearing or physical document verification, attend the relevant Election Office.',
+        'After approval, log in to the portal and follow the instructions to download or obtain your corrected NID.'
       ],
 
       offline: [
-        'Visit your local Upazila or Thana Election Office.',
-        'Explain which information on your NID needs correction.',
-        'Ask the office about the correct application form and supporting documents.',
-        'Complete the application form with the correct information.',
-        'Attach documents that prove the requested correction.',
-        'Submit the application to the responsible officer.',
-        'Pay the applicable fee according to the official instructions.',
-        'Attend a hearing or provide additional documents if requested.',
-        'Wait for the application to be reviewed and approved.',
-        'Follow the office instructions to obtain your corrected NID.'
+        'Visit your local Upazila or Thana Election Office with your existing NID card.',
+        'Explain clearly which information is incorrect and what the correct information should be.',
+        'Ask the responsible officer about the applicable correction category, prescribed application process and required supporting evidence.',
+        'Collect or complete the appropriate correction application as instructed by the Election Office.',
+        'Prepare the original documents and photocopies that prove the correct information.',
+        'For name corrections, bring relevant educational certificates or other official identity records when applicable.',
+        'For parents’ name corrections, bring parents’ NID information and supporting birth registration or educational records.',
+        'For address corrections, prepare acceptable proof of residence if the office requests it.',
+        'Submit the completed application and supporting documents to the responsible officer.',
+        'Pay the applicable fee through the officially instructed payment channel and keep the receipt.',
+        'Attend a hearing, interview or additional verification if the Election Commission requires it.',
+        'Follow up with the Election Office using your application reference and collect or download the corrected NID after approval.'
       ]
     },
 
@@ -187,31 +224,34 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official NID Services portal.',
-        'Log in to your NID account.',
-        'Select the information correction option.',
-        'Choose the date of birth field.',
-        'Enter the correct date of birth.',
-        'Upload your SSC or equivalent certificate and other relevant supporting documents.',
-        'Review all information before submitting the application.',
-        'Pay the applicable correction fee.',
-        'Submit the application and save the reference information.',
-        'Respond to any request for additional documents or investigation.',
-        'Wait for the Election Commission decision.',
-        'After approval, follow the portal instructions to obtain your corrected NID.'
+        'Visit the official NID Services portal and sign in to your existing account.',
+        'Select the NID information correction service from your account dashboard.',
+        'Choose the date of birth field as the information that needs correction.',
+        'Check your existing date of birth and enter the correct date according to your reliable official records.',
+        'Prepare your SSC or equivalent certificate, birth registration certificate and other relevant official evidence.',
+        'Upload clear copies of the supporting documents in the format and size accepted by the portal.',
+        'Review your requested date of birth and compare it with every uploaded document before submission.',
+        'Check the official fee calculator or payment screen for the applicable correction fee.',
+        'Pay the displayed fee through an available official payment channel and save the receipt.',
+        'Submit the application and keep the application reference number.',
+        'Monitor your account for requests for additional documents, investigation or a hearing.',
+        'Attend the Election Office if physical verification or an interview is required.',
+        'Wait for the Election Commission decision. If approved, follow the portal instructions to obtain your corrected NID.'
       ],
 
       offline: [
-        'Visit your local Upazila or Thana Election Office.',
-        'Explain that you need to correct the date of birth on your NID.',
-        'Ask about the required application form and supporting evidence.',
-        'Complete the correction form with the correct date of birth.',
-        'Attach your educational certificate, birth registration certificate and other relevant documents.',
-        'Submit the application to the responsible officer.',
-        'Pay the applicable fee according to the official instructions.',
-        'Attend an investigation, hearing or additional verification if requested.',
-        'Wait for the final decision from the Election Commission.',
-        'Follow the office instructions to receive your corrected NID.'
+        'Visit your local Upazila or Thana Election Office with your existing NID card.',
+        'Explain that the date of birth recorded on your NID is incorrect.',
+        'Ask the responsible officer about the applicable correction process and the documentary evidence required.',
+        'Collect or complete the prescribed NID correction application as instructed.',
+        'Prepare your SSC or equivalent certificate, birth registration certificate and other official documents supporting your correct date of birth.',
+        'Bring original documents and photocopies so the responsible officer can compare them.',
+        'Submit the correction application with the supporting documents.',
+        'Pay the applicable correction fee through the officially instructed payment method and retain the receipt.',
+        'Attend an investigation, interview or hearing if the Election Commission requests one.',
+        'Provide additional documents if the authority finds that further evidence is necessary.',
+        'Follow up with the Election Office using your application reference.',
+        'After approval, follow the official instructions to download or collect your corrected NID.'
       ]
     },
 
@@ -220,8 +260,7 @@ const serviceDetailsData = {
     officeInformation:
       'Date of birth correction is processed by the Bangladesh Election Commission. Applicants should provide strong documentary evidence. Depending on the case, the authority may conduct additional investigation or request a hearing.'
   },
-
-  'nid-4': {
+    'nid-4': {
     overview:
       'NID address change is required when your recorded address is incorrect or when you move to another area. There is a difference between correcting an address within the same voter area and transferring your voter registration to another area. Applicants must provide acceptable proof of their current residence. The Election Commission may verify the address before approving the change.',
 
@@ -246,30 +285,27 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official NID Services portal.',
-        'Log in to your NID account.',
-        'Choose the address correction or relevant voter area transfer option.',
-        'Enter your new address carefully.',
-        'Provide the requested information about your present and previous address.',
-        'Upload acceptable address proof and other required documents.',
-        'Review the application carefully.',
-        'Pay the applicable fee if required.',
-        'Submit the application and save the reference information.',
-        'Respond to any request for additional verification.',
-        'Follow the portal instructions after the application is approved.'
+        'Sign in to the official NID Services portal and first determine whether you need to correct an error in the address within the same voter area or transfer your voter area because you have moved.',
+        'For an address spelling/detail correction within the same voter area, choose the relevant information-correction/update option and enter the correct address.',
+        'For a move to a different voter area, check the portal instructions and the Election Commission process for voter-area transfer. Form-13 is used for voter-area transfer in applicable relocation cases; confirm the correct route with the receiving Election Office.',
+        'Enter both previous and new address details accurately, including district, upazila/thana, union/ward and other locality details requested.',
+        'Upload acceptable evidence of residence if the portal requests it. Examples may include a utility bill, rent agreement, holding-tax receipt or local certificate, subject to the Election Office’s acceptance.',
+        'Review the application and make sure you selected transfer rather than simple correction when the move crosses voter-area boundaries.',
+        'Pay any fee shown by the official portal, submit the application and save the reference number.',
+        'Respond to any address verification or additional document request. The Election Commission may verify actual residence.',
+        'Track the application and follow the portal instructions after approval to confirm the updated address/voter area.'
       ],
 
       offline: [
-        'Visit the relevant local Upazila or Thana Election Office.',
-        'Explain whether you need an address correction or a voter area transfer.',
-        'Ask the officer which form and documents are required.',
-        'For a voter area transfer due to relocation, complete Form-13 when instructed.',
-        'Attach acceptable address proof and your NID information.',
-        'Submit the application to the responsible officer.',
-        'Pay the applicable fee if required.',
-        'Complete any address verification requested by the Election Office.',
-        'Wait for the application decision.',
-        'Follow the office instructions to complete the address change.'
+        'Visit the Election Office for the area where you currently live. Explain whether you are correcting an address detail or moving your voter registration to another voter area.',
+        'Ask the officer which procedure applies. The NID FAQ distinguishes same-voter-area address correction from transfer to a different voter area.',
+        'If you have moved to another voter area, ask for Form-13 and complete it as instructed. For a spelling or address-detail correction within the same voter area, ask for the applicable correction application instead.',
+        'Bring your existing NID information and proof of your new residence, such as a utility bill, rent agreement, holding-tax receipt or other evidence accepted by the office.',
+        'Complete the form with your old and new addresses, contact details and reason for the change. Ensure the receiving voter area is selected correctly.',
+        'Attach the supporting documents and submit the application to the responsible officer. Keep the acknowledgement/reference.',
+        'Pay any applicable fee only as instructed through an official channel and keep the receipt.',
+        'Cooperate with residence verification or additional document requests from the Election Office.',
+        'Follow up with the office until the transfer/correction is decided. After approval, verify the updated information through the official NID portal.'
       ]
     },
 
@@ -278,7 +314,6 @@ const serviceDetailsData = {
     officeInformation:
       'Address correction and voter area transfer are handled by the Bangladesh Election Commission. Applicants should contact the relevant Election Office to confirm the correct procedure. Form-13 is used for voter area transfer in applicable relocation cases.'
   },
-
 
   // =====================================================
   // BIRTH REGISTRATION
@@ -308,29 +343,29 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official Birth and Death Registration website.',
-        'Select the new birth registration application.',
-        'Choose the appropriate registration office based on the place of birth or residence.',
-        'Enter the child’s name, date of birth, place of birth and other required information.',
-        'Provide the father’s and mother’s information.',
-        'Enter the required address details.',
-        'Review the information carefully before submitting.',
-        'Submit the application and save or print the application form.',
-        'Visit the selected registration office with the printed form and supporting documents.',
-        'Complete document verification and pay the applicable fee if required.',
-        'Collect the birth registration certificate after approval.'
+        'Open the official BDRIS portal at https://bdris.gov.bd/ and select “জন্ম নিবন্ধন আবেদন” (Birth Registration Application).',
+        'Choose the correct application basis: place of birth, permanent address or Bangladesh Embassy (for an eligible overseas application). Select the appropriate registration office shown by the portal.',
+        'Enter the applicant’s Bangla and English names, date of birth, gender, birth order and other personal details exactly as supported by records.',
+        'Complete the birth-place address and present/permanent address fields. Select the correct division, district, upazila/city corporation, union/ward and locality from the lists.',
+        'Enter the father’s and mother’s information as requested. Verify parent birth-registration information where the portal provides a verification step; enter NID/passport details when applicable.',
+        'Attach the image files requested by the portal. The application page specifies supported image formats and a file-size limit; check the live form before uploading.',
+        'Review the full application with the applicant/parent/guardian before submitting. The portal warns that submitted applications cannot simply be edited afterward.',
+        'Submit the application, save the application number and print the application form.',
+        'Take the printed form and original supporting documents to the selected Birth and Death Registrar office. The registrar may request hospital/clinic birth evidence, EPI/vaccination record, parents’ identity records, school records for older applicants or other proof appropriate to the applicant’s age.',
+        'Complete verification and pay the applicable fee, if any, according to the official fee schedule and registrar’s instruction. Keep the receipt.',
+        'Track the application status through BDRIS. Collect the certificate from the selected office after approval and check every Bangla/English entry before leaving.'
       ],
 
       offline: [
-        'Visit the relevant Union Parishad, Municipality or City Corporation office.',
-        'Ask the Birth Registration Officer about new birth registration.',
-        'Collect the required application form or follow the office’s application instructions.',
-        'Provide the child’s birth information and parents’ details.',
-        'Attach the required supporting documents.',
-        'Submit the application to the responsible registrar.',
-        'Pay the applicable fee according to the official rules.',
-        'Wait for document verification and approval.',
-        'Collect the birth registration certificate from the office.'
+        'Identify the correct Birth and Death Registrar: Union Parishad, Municipality, City Corporation or another authorized registration office based on the applicant’s birth/residence and the applicable jurisdiction.',
+        'Visit the office and ask for a new birth-registration application. Confirm which office is authorized to register the applicant and which supporting documents are required for the applicant’s age.',
+        'Collect the prescribed information/form or use the office’s guidance to complete the BDRIS application. The registrar may direct you to submit the application online even when you need in-person assistance.',
+        'Prepare the applicant’s birth evidence, such as hospital/clinic record or EPI/vaccination card where available, and the parents’ NID/birth-registration details. For an older applicant, bring school or other official records if relevant.',
+        'Complete the applicant’s Bangla and English name, date/place of birth, parents’ details and address carefully. Use consistent spellings from official records.',
+        'Submit the application and supporting documents to the registrar. If the application is entered online, obtain/print the application copy and keep its number.',
+        'Show original documents for verification and provide further evidence if the registrar requests it.',
+        'Pay the applicable government fee, if any, against an official receipt. Do not pay an unofficial intermediary.',
+        'Check the application status or follow up with the registrar. Collect the approved certificate and immediately check spelling, date of birth and parent details.'
       ]
     },
 
@@ -339,8 +374,7 @@ const serviceDetailsData = {
     officeInformation:
       'Birth registration is handled by the authorized Birth and Death Registrar. Depending on the applicant’s address and circumstances, the responsible office may be a Union Parishad, Municipality or City Corporation office.'
   },
-
-  'birth-registration-1': {
+    'birth-registration-1': {
     overview:
       'Birth information correction is used when a birth registration certificate contains incorrect or incomplete information. Common correction requests may involve a person’s name, date of birth, parents’ names or address. Applicants must provide supporting documents that prove the correct information. The registrar reviews the request and may approve or reject it based on the submitted evidence and applicable rules.',
 
@@ -364,30 +398,27 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official Birth and Death Registration website.',
-        'Select the birth registration information correction option.',
-        'Enter your existing birth registration number and date of birth.',
-        'Select the information that needs correction.',
-        'Enter the correct information carefully.',
-        'Upload or prepare the supporting documents requested by the portal.',
-        'Review the correction request.',
-        'Submit the application and save the application reference.',
-        'Visit the relevant registrar’s office if document verification is required.',
-        'Pay the applicable fee according to the official instructions.',
-        'After approval, follow the instructions to obtain the corrected certificate.'
+        'Open https://bdris.gov.bd/ and choose the birth-registration information correction application.',
+        'Enter the existing 17-digit birth registration number and date of birth exactly as recorded, then retrieve the existing record.',
+        'Select only the field(s) that contain errors, such as name, date of birth, parents’ information or address, and enter the proposed correct information.',
+        'For each correction, prepare evidence that directly proves the requested value. Examples include school certificates, hospital records, parents’ NID/birth registration or address records, depending on the field.',
+        'Upload the supporting files in the format and size accepted by the live portal. Make sure scans are clear and all text is readable.',
+        'Review the correction request carefully and submit it. Save the application number and print the application copy.',
+        'Take the printed application and original supporting documents to the registrar/office identified by BDRIS, when required. The correction is decided by the responsible registrar under the Births and Deaths Registration Act.',
+        'Pay the prescribed correction fee through the method instructed by the registrar and keep the receipt.',
+        'Track the request and respond to any further evidence or verification request. After approval, collect/download the corrected certificate as the portal/registrar directs and check the new copy.'
       ],
 
       offline: [
-        'Visit the office that is responsible for your birth registration.',
-        'Explain which information needs correction.',
-        'Ask for the required correction form and supporting document list.',
-        'Complete the form with the correct information.',
-        'Attach your existing birth registration certificate and supporting documents.',
-        'Submit the application to the registrar.',
-        'Pay the applicable fee if required.',
-        'Respond to any additional verification request.',
-        'Wait for the correction decision.',
-        'Collect the corrected birth registration certificate after approval.'
+        'Visit the Birth and Death Registrar office responsible for the existing registration, or the office identified by BDRIS.',
+        'Explain which entry is wrong and show the existing certificate or provide the 17-digit registration number and date of birth.',
+        'Ask for the prescribed correction process and the exact documents needed for each requested field. A correction must be supported by evidence, not merely a verbal request.',
+        'Complete the correction application with the existing information and the proposed correct information.',
+        'Attach documents that establish the correct entry—for example school/examination records for relevant name/date details, hospital records for birth details, or parents’ identity documents for parent information.',
+        'Submit the application and supporting documents to the registrar. Show originals for comparison and keep an acknowledgement/reference.',
+        'Pay the prescribed fee, if applicable, and obtain an official receipt.',
+        'Respond to any verification or additional-document request. The registrar reviews the request under the Births and Deaths Registration Act and applicable rules.',
+        'After approval, collect the corrected certificate. Check the printed record carefully and keep the old certificate only as directed by the registrar.'
       ]
     },
 
@@ -420,26 +451,25 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official Birth and Death Registration website.',
-        'Use the available birth registration information verification option.',
-        'Enter your birth registration number and date of birth.',
-        'Check whether your registration record is available.',
-        'Follow the official instructions for obtaining or printing the certificate.',
-        'If an online copy is not available, contact the responsible registrar’s office.',
-        'Provide the required information for record verification.',
-        'Pay any applicable fee according to the official instructions.',
-        'Collect or print the certificate after completing the process.'
+        'Open the official BDRIS portal and select the birth-registration certificate reprint option from the Birth Registration menu.',
+        'Enter the requested registration details, normally the 17-digit birth registration number and date of birth, and follow the portal’s verification steps.',
+        'Check that the displayed record belongs to the correct person. Do not proceed if the name, date of birth or parent information belongs to someone else.',
+        'Follow the portal’s available reprint instructions. If the system only provides record verification or does not allow direct printing for your record, contact the registrar who maintains the registration.',
+        'Prepare the registration number, date of birth, existing photocopy/photo of the certificate if available and your identity information for the registrar.',
+        'Submit any application or request required by the portal/registrar and save the reference number.',
+        'Pay a copy/reprint fee only if the official system or registrar confirms one is payable; obtain a receipt.',
+        'After the record is verified, print or collect the certificate copy using the method authorized by the registrar. Check that the QR code/registration details are legible.'
       ],
 
       offline: [
-        'Visit the office responsible for your birth registration.',
-        'Explain that you need a copy of your birth registration certificate.',
-        'Provide your birth registration number and date of birth.',
-        'Submit an application if required by the office.',
-        'Provide additional identity information if requested.',
-        'Pay the applicable fee according to the official rules.',
-        'Wait for the registrar to verify your record.',
-        'Collect the certificate copy after verification.'
+        'Visit the Union Parishad, Municipality or City Corporation Birth and Death Registration Office that maintains the original record.',
+        'Explain that you need a reprint/copy because the original certificate is lost, damaged or unavailable.',
+        'Provide the 17-digit birth registration number and date of birth. If you do not know the number, provide the person’s full name, parents’ names, place of registration and any old photocopy/photo to help locate the record.',
+        'Show your NID or other identity document if requested. If applying for another person, ask whether proof of relationship or authorization is required.',
+        'Ask the registrar to search and verify the existing register/BDRIS record. This is a request for a copy of an existing registration, not a new birth registration.',
+        'Complete the office’s copy/reprint request form if required and submit the available supporting details.',
+        'Pay only the applicable official copy/reprint fee if charged and collect an official receipt.',
+        'Collect the reprinted certificate after the registrar confirms the record. Check all details and keep the certificate safely.'
       ]
     },
 
@@ -448,9 +478,7 @@ const serviceDetailsData = {
     officeInformation:
       'Certificate copies are handled by the responsible Birth and Death Registrar. If your registration information cannot be found online, contact the local registrar’s office for record verification and assistance.'
   },
-
-
-  // =====================================================
+    // =====================================================
   // PASSPORT SERVICES
   // =====================================================
 
@@ -478,27 +506,30 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official Bangladesh e-Passport portal.',
-        'Create an account or sign in using the required information.',
-        'Select the appropriate passport application option.',
-        'Choose your present location and the relevant passport office.',
-        'Complete the application form with accurate personal information.',
-        'Select the passport type, validity and delivery category.',
-        'Review the application carefully.',
-        'Pay the applicable passport fee using an available payment method.',
-        'Download or print the application summary and payment receipt.',
-        'Follow the instructions to attend the passport office for biometric enrolment.'
+        'Open the official e-Passport portal at https://www.epassport.gov.bd/ and read the current application instructions before starting.',
+        'Create an account using an active email/mobile detail as requested, verify the account and sign in.',
+        'Choose Apply for e-Passport / New Application. Select the country/office of application and the passport office serving your present address.',
+        'Complete the form using your NID or English-version online birth registration details, as required by the portal and age rules. The portal instructs applicants to match the identity document; do not use a different spelling or date.',
+        'Enter personal, parental, spouse (if applicable), address, profession and emergency-contact information. For an applicant under 18 without an NID, provide the parent’s NID details as instructed.',
+        'Select passport booklet type, validity and delivery category available for your eligibility. Review the fee generated by the official portal; fees depend on pages, validity and delivery speed.',
+        'Pay using a payment method listed on the portal, including supported online channels or A-Challan bank payment. Save/print the payment receipt.',
+        'Submit the application and download/print the complete application summary. Check that the summary and payment receipt are readable.',
+        'Attend the selected passport office on the appointment/instruction date with the printed application, payment evidence and original NID or English BRC plus any additional documents required for your case.',
+        'At the passport office, submit the documents for checking and complete photograph, fingerprints, iris scan and signature capture. Answer any questions and provide extra documents if requested.',
+        'Complete police verification if the authority requires it. Track the application through the official portal/SMS and collect the passport when the status and office instructions say it is ready.'
       ],
 
       offline: [
-        'Visit the selected Regional Passport Office on the scheduled date.',
-        'Bring your printed application summary and supporting documents.',
-        'Submit the required documents for verification.',
-        'Complete photograph, fingerprint and other biometric enrolment procedures.',
-        'Attend any additional verification or interview if requested.',
-        'Complete police verification when applicable.',
-        'Check the application status using the official system.',
-        'Collect your passport according to the selected delivery instructions.'
+        'Before visiting, use the official e-Passport portal to identify the correct Regional Passport Office/Divisional Passport and Visa Office for your address and check its current enrolment instructions.',
+        'Prepare your NID or English-version online birth registration certificate according to your age and eligibility, plus any original supporting records requested for your case.',
+        'If you need help with the online form, use the official portal or ask the passport office help desk about the approved application process. The standard application is completed online; do not assume a paper walk-in form is accepted at every office.',
+        'Complete the e-Passport application online with the same name, date of birth and identity details as your NID/BRC. Select the correct passport office, booklet, validity and delivery category.',
+        'Pay the fee using the portal’s approved online method or generate the A-Challan and pay at a government/private bank that accepts it. Keep the official receipt.',
+        'Print the submitted application summary and assemble the original identity document and all supporting documents listed in the official enrolment checklist.',
+        'Attend the selected passport office on the date/instructions shown. Submit the application summary and payment proof for document verification.',
+        'Complete biometric enrolment, including photograph, fingerprints, iris and signature capture as required. Attend any interview or additional verification if requested.',
+        'Complete police verification when instructed and track the status through the official system.',
+        'Collect the passport personally or through the permitted delivery process after approval, following the passport office’s collection instructions.'
       ]
     },
 
@@ -526,32 +557,35 @@ const serviceDetailsData = {
       'Online application summary: Print the submitted renewal application.',
       'Payment receipt: Keep proof of payment for the passport fee.',
       'Supporting documents: Provide documents supporting any change in personal information.',
-      'Additional documents: The passport office may request further evidence depending on the case.'
+      'Additional documents: The passport office may request further documents depending on the case.'
     ],
 
     applicationSteps: {
       online: [
-        'Visit the official e-Passport portal.',
-        'Sign in to your account or create an account if required.',
-        'Choose the passport reissue or renewal application option.',
-        'Enter your previous passport information.',
-        'Complete the application with accurate personal information.',
-        'Select the passport type and delivery category.',
-        'Review the application before submission.',
-        'Pay the applicable fee.',
-        'Download or print the application summary and payment receipt.',
-        'Follow the appointment instructions for biometric enrolment.'
+        'Open the official e-Passport portal and sign in to your account.',
+        'Select the passport re-issue application option. Passport renewal is generally processed as a re-issue rather than a completely new identity record.',
+        'Enter your previous passport number, issue date, expiry date and other requested passport information.',
+        'Complete the application using the same personal information shown on your NID or English-version birth registration certificate.',
+        'Provide your current address, contact information, profession and other required details.',
+        'Select the appropriate booklet type, validity period and delivery category.',
+        'Review the fee displayed by the official portal before making payment.',
+        'Pay the applicable fee through an approved payment channel and save the transaction receipt.',
+        'Submit the application and download or print the application summary.',
+        'Attend the selected passport office with your previous passport, identity document, application summary and payment receipt.',
+        'Complete biometric enrolment and any additional verification requested by the passport authority.',
+        'Track your application status and collect the re-issued passport after approval.'
       ],
 
       offline: [
-        'Visit the selected passport office on the scheduled date.',
-        'Bring your previous passport and printed application summary.',
-        'Submit your identity documents and payment receipt.',
-        'Complete biometric enrolment as instructed.',
-        'Provide additional documents if requested.',
-        'Complete any required verification.',
-        'Check your application status through the official system.',
-        'Collect the renewed passport after approval.'
+        'Check the official e-Passport portal and identify the passport office serving your address. Confirm whether an appointment or specific enrolment date is required.',
+        'Bring your existing or expired passport, original NID or English BRC as applicable, and documents supporting any change in personal details.',
+        'Complete the re-issue application online, because renewal is handled through the e-Passport re-issue process. If you need help, ask the passport office help desk for assistance with the official portal.',
+        'Enter the old passport details and select the correct re-issue reason. Make sure the new application matches your identity documents.',
+        'Pay the fee through an approved portal method or A-Challan bank payment and retain the receipt.',
+        'Print the application summary and take it, the old passport, identity documents and supporting evidence to the selected passport office.',
+        'Submit the documents for verification and complete photograph, fingerprints, iris and signature capture as instructed.',
+        'Provide any additional explanation or evidence requested by the passport officer. Complete police verification if required.',
+        'Track the application status and collect the re-issued passport after approval.'
       ]
     },
 
@@ -560,8 +594,7 @@ const serviceDetailsData = {
     officeInformation:
       'Passport renewal applications are processed by the Department of Immigration and Passports. Applicants should bring their previous passport and all supporting documents to the selected passport office.'
   },
-
-  'passport-2': {
+    'passport-2': {
     overview:
       'Passport information correction is required when personal details in a passport application or passport record need to be changed. Corrections may involve name, date of birth or other personal information. Applicants must provide official documents that support the requested correction. The passport authority reviews the documents and decides whether the requested correction can be approved.',
 
@@ -586,30 +619,28 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official e-Passport portal.',
-        'Sign in to your account.',
-        'Choose the relevant passport application or reissue option.',
-        'Enter the correct personal information according to your supporting documents.',
-        'Provide the previous passport details.',
-        'Prepare the documents supporting the correction.',
-        'Review the application carefully.',
-        'Pay the applicable fee.',
-        'Submit the application and print the application summary.',
-        'Attend the passport office for document and biometric verification.',
-        'Respond to any additional verification request.'
+        'Sign in to the official e-Passport portal and start the appropriate e-Passport re-issue/application process. Passport record corrections are handled through the passport authority’s re-issue procedure, not by editing an issued passport online.',
+        'Identify each incorrect detail—such as name spelling, date of birth, parents’ names or other personal information—and determine the correct entry from authoritative identity records.',
+        'Prepare the official evidence that supports each correction, such as NID, English BRC, SSC/equivalent certificate, previous passport or other relevant government record.',
+        'Enter the application information consistently with the supporting documents and provide previous passport details.',
+        'Select the correct re-issue reason/option and disclose the requested change where the form or office instructions ask for it.',
+        'Select booklet, validity and delivery category and check the applicable fee displayed by the portal.',
+        'Pay through an approved channel, submit the application and print the summary and payment receipt.',
+        'Attend the passport office with the existing passport, original identity records, printed summary and all evidence. Explain the requested correction before biometric enrolment.',
+        'Complete document and biometric verification. The passport authority may ask for further documents, an interview or clarification; approval is not automatic.',
+        'Track the application and collect the passport showing the corrected details only after the authority approves the change.'
       ],
 
       offline: [
-        'Visit the relevant passport office.',
-        'Explain which information needs correction.',
-        'Ask the passport officer about the required supporting documents.',
-        'Complete the appropriate application process.',
-        'Submit your existing passport and supporting identity documents.',
-        'Provide additional evidence if requested.',
-        'Complete biometric enrolment or verification if required.',
-        'Pay the applicable fee according to official instructions.',
-        'Wait for the passport authority’s decision.',
-        'Collect the corrected passport after approval.'
+        'Visit or contact the passport office serving your area and explain exactly which passport detail is incorrect. Ask what evidence is required before submitting the re-issue application.',
+        'Prepare your existing passport and original supporting identity records, such as NID, English BRC, educational certificate or other official document relevant to the correction.',
+        'Complete the official e-Passport re-issue application online as directed by the office. Enter details that match the evidence and clearly disclose the correction requested.',
+        'Pay the applicable fee through an approved payment method and keep the receipt.',
+        'Print the application summary and submit it with the existing passport and supporting documents at the selected passport office.',
+        'Explain the reason for the correction and show original documents for comparison. Do not rely on affidavits alone where primary evidence is required.',
+        'Complete biometric enrolment and any interview or additional verification requested by the passport authority.',
+        'Respond to further document requests and wait for the authority’s decision.',
+        'After approval, collect the re-issued passport and check every printed detail before leaving the office.'
       ]
     },
 
@@ -643,30 +674,30 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official e-Passport portal.',
-        'Sign in or create an account as instructed.',
-        'Choose the relevant passport reissue option.',
-        'Provide the information about your lost passport.',
-        'Complete the application using your correct personal details.',
-        'Prepare a police report or GD if required.',
-        'Review the application and supporting information.',
-        'Pay the applicable passport fee.',
-        'Submit the application and print the summary.',
-        'Attend the selected passport office with the required documents.',
-        'Complete biometric enrolment and any additional verification.'
+        'If your passport is lost, report the loss to the nearest police station and obtain a General Diary (GD)/police report. Keep the GD number, date and police-station details.',
+        'Open the official e-Passport portal and select Apply for e-Passport / Re-Issue.',
+        'Choose the lost-passport reason and enter the previous passport number and other details if known. If you do not know the number, use any photocopy, scan, visa copy or saved passport record to retrieve it.',
+        'Complete personal information using your NID or English BRC and provide the loss details exactly as stated in the police report.',
+        'Prepare the GD/police report, identity document, previous passport photocopy if available and any additional evidence requested by the passport authority.',
+        'Select the passport type, validity and delivery category. Review the fee displayed for the lost-passport re-issue case.',
+        'Pay through an approved payment channel, submit the application and print the application summary and payment receipt.',
+        'Attend the selected passport office with the printed summary, GD/police report, original identity documents and available copy of the lost passport.',
+        'Complete document checking and biometric enrolment. The office may ask for additional verification or investigation because the previous passport is lost.',
+        'Track the application and complete any police/authority verification. Collect the replacement passport only after approval.'
       ],
 
       offline: [
-        'Report the passport loss to the appropriate police station and obtain a report or GD if required.',
-        'Visit the relevant passport office.',
-        'Explain that your previous passport has been lost.',
-        'Provide your passport number or a photocopy if available.',
-        'Submit your identity documents and supporting police report when required.',
-        'Complete the reissue application process.',
-        'Pay the applicable fee according to official instructions.',
-        'Complete biometric enrolment and verification.',
-        'Wait for the application decision.',
-        'Collect the replacement passport after approval.'
+        'Report the loss to the nearest police station and obtain a GD/police report. Keep the original or certified copy and note the GD number and date.',
+        'Visit the Regional Passport Office or Divisional Passport and Visa Office responsible for your address.',
+        'Explain that your previous passport has been lost and that you need to apply for a replacement.',
+        'Provide the previous passport number and any available photocopy, scan or other passport-related record.',
+        'Ask the passport officer to confirm the current lost-passport re-issue procedure and the documents required for your case.',
+        'Complete the official e-Passport re-issue application online as instructed by the passport office.',
+        'Prepare your GD/police report, NID or English BRC, printed application summary and payment receipt.',
+        'Submit the application and supporting documents for verification.',
+        'Pay the applicable fee through the approved payment channel and retain the receipt.',
+        'Complete biometric enrolment and any additional investigation or verification requested by the authority.',
+        'Track your application and collect the replacement passport after approval.'
       ]
     },
 
@@ -675,9 +706,7 @@ const serviceDetailsData = {
     officeInformation:
       'Lost passport replacement is handled by the Department of Immigration and Passports. Applicants should contact the relevant passport office and follow its current instructions regarding police reporting and supporting documents.'
   },
-
-
-  // =====================================================
+    // =====================================================
   // DRIVING LICENCE
   // =====================================================
 
@@ -704,29 +733,34 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official BRTA Service Portal.',
-        'Create an account or sign in.',
-        'Select the learner driving licence application option.',
-        'Choose the appropriate vehicle category.',
-        'Enter your personal and contact information.',
-        'Provide the required identity and medical information.',
-        'Upload the requested supporting documents.',
-        'Review the application carefully.',
-        'Pay the applicable fee using an available payment method.',
-        'Submit the application and save the reference information.',
-        'Follow the portal instructions for verification and learner licence issuance.'
+        'Open the official BRTA Service Portal at https://bsp.brta.gov.bd/ and create an account using your required personal and contact information.',
+        'Verify your account and sign in to the portal.',
+        'Select the learner driving licence application service.',
+        'Choose the appropriate vehicle category, such as motorcycle or light motor vehicle, according to your eligibility.',
+        'Read the age, medical fitness and other eligibility requirements applicable to your selected vehicle category.',
+        'Enter your full name, date of birth, NID or birth registration information, address and contact details accurately.',
+        'Provide the medical fitness information and other details requested by the application.',
+        'Upload clear copies of the identity document, medical certificate, photograph and other supporting documents requested by the portal.',
+        'Review all information carefully, especially your name, date of birth, vehicle category and contact details.',
+        'Pay the learner licence fee using a payment method available through the BRTA Service Portal.',
+        'Submit the application and save the application number and payment receipt.',
+        'Check your portal account for verification updates, appointment details or further instructions.',
+        'Complete any required verification at the relevant BRTA Circle Office and obtain the learner licence after approval.',
+        'Follow the conditions of your learner licence while practising before applying for the full driving licence.'
       ],
 
       offline: [
-        'Visit the relevant BRTA Circle Office.',
-        'Ask about the learner licence application requirements.',
-        'Collect or complete the required application form.',
-        'Provide your identity and medical fitness documents.',
-        'Submit the completed application with supporting documents.',
-        'Pay the applicable fee.',
-        'Complete any required verification.',
-        'Collect the learner licence after approval.',
-        'Follow the learner licence conditions before applying for a full licence.'
+        'Visit the BRTA Circle Office responsible for your area.',
+        'Ask the information desk about the current learner driving licence application process and eligibility requirements.',
+        'Confirm the minimum age and vehicle category requirements before completing the application.',
+        'Obtain the prescribed application form or ask for assistance in completing the online application through the official BRTA Service Portal.',
+        'Prepare your NID or acceptable birth registration document, medical fitness certificate, photograph and other documents requested by BRTA.',
+        'Complete the application with accurate personal information and select the correct vehicle category.',
+        'Submit the completed application and supporting documents to the responsible BRTA officer.',
+        'Pay the applicable learner licence fee through the officially instructed payment method and collect the receipt.',
+        'Complete document verification and any other required procedures.',
+        'Collect the learner licence after approval and check the information printed on it.',
+        'Follow all learner licence conditions and the instructions provided by BRTA before applying for a full driving licence.'
       ]
     },
 
@@ -760,31 +794,35 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official BRTA Service Portal.',
-        'Sign in to your account.',
-        'Choose the full driving licence application option.',
-        'Select the appropriate vehicle category.',
-        'Enter the required personal and learner licence information.',
-        'Upload the requested supporting documents.',
-        'Review the application.',
-        'Pay the applicable fee.',
-        'Submit the application and save the reference information.',
-        'Follow the portal instructions for the driving test schedule.',
-        'Attend the required test and verification process.',
-        'After passing and approval, follow the instructions to obtain the full licence.'
+        'Visit the official BRTA Service Portal at https://bsp.brta.gov.bd/ and sign in to your account.',
+        'Make sure you have a valid learner driving licence and have completed the required learning period and practice.',
+        'Select the full or smart driving licence application service available in your account.',
+        'Choose the correct vehicle category corresponding to your learner licence.',
+        'Enter your learner licence number and verify your personal information.',
+        'Complete the application with the requested NID, address, contact and other information.',
+        'Upload the supporting documents requested by BRTA, including medical fitness evidence if applicable.',
+        'Review the application carefully before submission.',
+        'Pay the applicable driving licence fee using the payment method shown in the portal.',
+        'Submit the application and save the application reference and payment receipt.',
+        'Check the portal for the driving test schedule, venue and instructions.',
+        'Attend the scheduled driving test with your valid learner licence and required documents.',
+        'Complete the practical driving test and any additional examination or verification required by BRTA.',
+        'After passing and receiving approval, follow the portal instructions to complete licence issuance and collection.'
       ],
 
       offline: [
-        'Visit your relevant BRTA Circle Office.',
-        'Ask about the full driving licence application process.',
-        'Provide your learner licence and identity documents.',
-        'Complete the required application form.',
-        'Submit the medical and other supporting documents.',
-        'Pay the applicable fee.',
-        'Attend the scheduled driving test.',
-        'Complete any additional verification required by BRTA.',
-        'Wait for the result and approval.',
-        'Collect the full driving licence according to the office instructions.'
+        'Visit the BRTA Circle Office responsible for your area and ask about applying for a full driving licence.',
+        'Bring your valid learner driving licence and NID information.',
+        'Confirm that you have completed the required learner period and meet the eligibility requirements for your vehicle category.',
+        'Collect or complete the prescribed application form as instructed by BRTA.',
+        'Prepare the medical fitness certificate and other supporting documents requested by the office.',
+        'Submit the application and supporting documents to the responsible BRTA officer.',
+        'Pay the applicable licence fee through the official payment channel and retain the receipt.',
+        'Ask for the driving test date, venue and required documents.',
+        'Attend the scheduled written, oral or practical driving test as applicable.',
+        'Follow the examiner’s instructions and complete all required tests.',
+        'Wait for the test result and final approval from BRTA.',
+        'After successful approval, follow the office instructions to receive your full driving licence.'
       ]
     },
 
@@ -817,29 +855,34 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official BRTA Service Portal.',
-        'Sign in to your account.',
-        'Choose the driving licence renewal option.',
-        'Enter your existing licence information.',
-        'Check your personal and licence details.',
-        'Upload the required documents.',
-        'Review the renewal application.',
-        'Pay the applicable renewal fee.',
-        'Submit the application and save the reference number.',
-        'Follow the portal instructions for verification.',
-        'Collect or receive the renewed licence according to BRTA instructions.'
+        'Visit the official BRTA Service Portal and sign in to your account.',
+        'Select the driving licence renewal service.',
+        'Enter your existing driving licence number and check the licence information displayed by the portal.',
+        'Verify your name, date of birth, licence category and expiry information.',
+        'Update the requested personal or contact information if the portal allows it.',
+        'Prepare your existing driving licence, NID and medical fitness certificate if required.',
+        'Upload the supporting documents requested by the portal.',
+        'Review the renewal application and check that all information is correct.',
+        'Check the official fee displayed for your licence category and renewal situation.',
+        'Pay the applicable renewal fee through the available payment method.',
+        'Submit the application and save the reference number and payment receipt.',
+        'Monitor your account for document verification, medical examination or office appointment instructions.',
+        'Complete any required verification and follow the portal instructions to receive the renewed licence.'
       ],
 
       offline: [
         'Visit the relevant BRTA Circle Office.',
-        'Explain that you need to renew your driving licence.',
-        'Provide your existing licence and NID information.',
-        'Collect or complete the required renewal application form.',
-        'Submit the medical certificate and other required documents.',
-        'Pay the applicable renewal fee.',
-        'Complete verification if required.',
-        'Wait for the renewal application to be approved.',
-        'Collect the renewed licence according to the office instructions.'
+        'Explain that your driving licence has expired or is approaching its expiry date and you want to renew it.',
+        'Bring your existing or expired driving licence and NID.',
+        'Ask the responsible officer about the renewal requirements for your licence category.',
+        'Obtain the required renewal application form or assistance with the online BRTA application.',
+        'Complete the application with your correct personal and existing licence information.',
+        'Attach the medical fitness certificate and photograph if required by BRTA.',
+        'Submit the application and supporting documents to the responsible officer.',
+        'Pay the applicable renewal fee through the official payment method and keep the receipt.',
+        'Complete any required document verification or medical examination.',
+        'Follow up with BRTA using your application reference.',
+        'Collect the renewed driving licence after approval.'
       ]
     },
 
@@ -873,30 +916,32 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Visit the official BRTA Service Portal.',
-        'Sign in to your account.',
-        'Select the duplicate or replacement driving licence option if available.',
-        'Provide your existing licence information.',
-        'Explain whether the licence is lost or damaged.',
-        'Upload the required identity and supporting documents.',
-        'Submit a police report or GD if required.',
-        'Review the application carefully.',
-        'Pay the applicable fee.',
-        'Submit the application and save the reference information.',
-        'Follow BRTA instructions for verification and replacement licence collection.'
+        'Visit the official BRTA Service Portal and sign in to your account.',
+        'Select the duplicate or replacement driving licence service if it is available in your account.',
+        'Provide your existing driving licence number and verify the licence record.',
+        'Select the reason for replacement, such as lost, damaged or unusable.',
+        'If the licence is lost, ask BRTA whether a police General Diary (GD) is required for your case.',
+        'Prepare your NID, available licence information, GD/police report if required and other supporting documents.',
+        'Upload clear copies of the requested documents.',
+        'Review the application and confirm that the existing licence details are correct.',
+        'Pay the applicable duplicate licence fee through the official payment method.',
+        'Submit the application and save the application reference and payment receipt.',
+        'Monitor your account for further document or verification requests.',
+        'Complete any required verification and collect the replacement licence according to BRTA instructions.'
       ],
 
       offline: [
         'Visit the relevant BRTA Circle Office.',
-        'Explain that your driving licence is lost or damaged.',
-        'Provide your NID and available driving licence information.',
-        'Ask whether a police report or GD is required.',
-        'Complete the duplicate licence application form.',
-        'Attach the required supporting documents.',
-        'Pay the applicable fee.',
-        'Submit the application for verification.',
-        'Wait for approval from BRTA.',
-        'Collect the replacement licence according to office instructions.'
+        'Explain that your driving licence has been lost, damaged or become unusable.',
+        'Provide your NID and driving licence number or a photocopy of the licence if available.',
+        'If your licence is lost, ask the officer whether a police GD or report is required.',
+        'Prepare the requested identity documents, GD/police report if applicable and available licence information.',
+        'Obtain or complete the prescribed duplicate/replacement licence application.',
+        'Submit the application and supporting documents to the responsible BRTA officer.',
+        'Pay the applicable fee through the official payment channel and keep the receipt.',
+        'Complete any required verification of your existing licence record.',
+        'Follow up with the BRTA office using your application reference.',
+        'Collect the duplicate or replacement driving licence after approval.'
       ]
     },
 
@@ -905,9 +950,7 @@ const serviceDetailsData = {
     officeInformation:
       'Duplicate and replacement driving licences are processed by BRTA. Applicants should contact their relevant BRTA Circle Office to confirm the current procedure and required supporting documents.'
   },
-
-
-  // =====================================================
+    // =====================================================
   // MARRIAGE REGISTRATION
   // =====================================================
 
@@ -948,15 +991,19 @@ const serviceDetailsData = {
       ],
 
       offline: [
-        'Contact an authorized marriage registrar.',
-        'Confirm the legal requirements for the type of marriage.',
-        'Prepare the identity and age documents of both parties.',
-        'Provide the required witness information and documents.',
-        'Complete the necessary marriage registration forms and declarations.',
-        'Follow the applicable marriage ceremony and registration procedure.',
-        'Pay the registration fee according to the current rules.',
-        'The registrar records the marriage in the official register.',
-        'Collect the marriage registration certificate or relevant document.'
+        'Contact an authorized marriage registrar responsible for the area where the marriage will be registered.',
+        'Explain that you want to complete a legal marriage registration and confirm the applicable registration procedure.',
+        'Ask the registrar about the legal age requirements and the documents required from both parties.',
+        'Prepare the bride’s and groom’s NID or other accepted identity documents.',
+        'Prepare documents establishing the legal age of both parties.',
+        'Arrange the required witnesses and collect their identity information.',
+        'If either party was previously married, prepare the relevant divorce or previous spouse’s death certificate when applicable.',
+        'Provide the registrar with the personal details, addresses and other information required for the marriage record.',
+        'Complete the applicable marriage documentation and declarations.',
+        'Follow the legal marriage ceremony and registration procedure applicable to the type of marriage.',
+        'Pay the registration fee according to the current government rules and obtain a receipt.',
+        'The authorized registrar records the marriage in the official register.',
+        'Collect the marriage registration certificate or relevant official document and check the recorded information.'
       ]
     },
 
@@ -991,27 +1038,32 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Identify the authorized Nikah Registrar for the relevant area.',
-        'Contact the registrar to confirm whether any online facility is available.',
-        'Ask about the required documents and current registration fee.',
-        'Prepare the identity and age documents of both parties.',
-        'Provide the required marriage and dower information.',
-        'Follow the registrar’s instructions for completing the marriage documentation.',
-        'Complete the marriage registration according to the applicable law.',
-        'Pay the applicable registration fee.',
-        'Collect the official marriage registration document from the registrar.'
+        'Identify the authorized Nikah Registrar or Kazi Office responsible for the area where the marriage will be registered.',
+        'Contact the registrar to confirm whether an online application or preliminary information-submission facility is available.',
+        'Ask about the required documents, legal age requirements, witness requirements and current registration fee.',
+        'Prepare the bride’s and groom’s NID or other accepted identity documents.',
+        'Prepare documents establishing the legal age of both parties.',
+        'Provide the agreed dower amount and other marriage-related information requested by the registrar.',
+        'Prepare the witness information and identity details required for registration.',
+        'Follow the registrar’s instructions for submitting preliminary information or completing any available online process.',
+        'Attend the registrar’s office or follow the appointment instructions to complete the required marriage documentation.',
+        'The authorized Nikah Registrar records the marriage according to the applicable law.',
+        'Pay the applicable registration fee and collect the official marriage registration document.'
       ],
 
       offline: [
-        'Contact an authorized Nikah Registrar or Kazi Office.',
-        'Confirm the registration requirements and applicable fee.',
-        'Provide the bride’s and groom’s identity and age documents.',
-        'Provide the required witness information.',
-        'Provide the agreed dower amount and other required marriage details.',
-        'Complete the necessary marriage documentation.',
-        'The authorized registrar records the marriage in the official register.',
-        'Pay the applicable registration fee.',
-        'Collect the marriage registration certificate or relevant official document.'
+        'Contact the authorized Nikah Registrar or Kazi Office responsible for the area.',
+        'Explain that you want to register a Muslim marriage and confirm the applicable legal procedure.',
+        'Ask about the legal age requirements and the identity documents needed from the bride and groom.',
+        'Prepare the bride’s and groom’s NID or other accepted identity documents.',
+        'Arrange the required witnesses and provide their names, addresses and identity details.',
+        'Provide the agreed dower amount (Mahr) and the payment-related information requested by the registrar.',
+        'If either party was previously married, provide the relevant divorce or death certificate when applicable.',
+        'Provide guardian information where required by the applicable legal procedure.',
+        'Complete the prescribed marriage registration documentation, including the applicable Nikahnama/Kabinnama.',
+        'The authorized Nikah Registrar records the marriage in the official register and completes the required documentation.',
+        'Pay the registration fee according to the current rules and obtain an official receipt.',
+        'Collect the marriage registration certificate or Kabinnama and check the names, dates and dower information carefully.'
       ]
     },
 
@@ -1044,24 +1096,29 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Check whether the relevant registrar offers an online certificate copy service.',
-        'Contact the original marriage registrar for the correct procedure.',
-        'Provide the marriage registration details requested by the registrar.',
-        'Submit identity information and supporting documents through an official facility if available.',
-        'Pay the applicable fee according to the registrar’s instructions.',
-        'Follow the verification process.',
-        'Collect the certified copy using the method provided by the registrar.'
+        'Check whether the original marriage registrar provides an official online certificate-copy service.',
+        'Identify the registrar or office that maintains the original marriage registration record.',
+        'Contact the registrar and confirm whether an online request for a certified copy is available.',
+        'Prepare the marriage registration number, date of registration and the bride’s and groom’s personal details.',
+        'If an official online application facility is available, complete the requested information accurately.',
+        'Provide the applicant’s identity information and any supporting documents requested by the registrar.',
+        'Submit the request through the official facility and save the application reference if one is issued.',
+        'Pay the applicable copy fee through the officially instructed payment method, if required.',
+        'Follow the registrar’s verification instructions.',
+        'Collect the certified copy through the authorized collection or delivery method.'
       ],
 
       offline: [
-        'Visit the office of the registrar who recorded the marriage.',
-        'Explain that you need a copy of your marriage registration certificate.',
-        'Provide the available marriage registration information.',
-        'Submit your identity document and any available copy of the original certificate.',
-        'Complete the required application form if requested.',
-        'Pay the applicable copy fee.',
-        'Wait for the registrar to verify the marriage record.',
-        'Collect the certified copy after verification.'
+        'Visit the office of the Marriage Registrar who originally recorded the marriage.',
+        'Explain that you need a certified copy of your marriage registration certificate or Kabinnama.',
+        'Provide the marriage registration number, date of marriage and the names of the bride and groom.',
+        'If you do not know the registration number, provide any available old photocopy, photograph or other information that may help locate the record.',
+        'Show your NID or other accepted identity document.',
+        'If applying on behalf of another person, ask the registrar whether authorization or proof of relationship is required.',
+        'Complete the copy-request application or other prescribed procedure if required.',
+        'Pay the applicable copy fee and obtain an official receipt.',
+        'Allow the registrar to search and verify the original marriage register.',
+        'Collect the certified copy after verification and check that all recorded information is correct.'
       ]
     },
 
@@ -1095,28 +1152,32 @@ const serviceDetailsData = {
 
     applicationSteps: {
       online: [
-        'Contact the original marriage registrar to confirm the correction procedure.',
-        'Check whether an official online correction facility is available.',
-        'Provide the existing marriage registration information.',
-        'Identify the incorrect information and provide the correct details.',
-        'Prepare supporting official documents.',
-        'Submit the correction request through an official facility if available.',
-        'Pay the applicable fee if required.',
-        'Respond to any additional verification request.',
-        'Follow the registrar’s instructions after the correction decision.'
+        'Contact the original marriage registrar and confirm the applicable correction procedure.',
+        'Ask whether an official online correction facility is available for the relevant marriage registration record.',
+        'Prepare the existing marriage registration number, date and available certificate copy.',
+        'Identify the exact incorrect information, such as the bride’s name, groom’s name, date or other recorded details.',
+        'Prepare official documents that prove the correct information, including relevant NID or other government records.',
+        'If an official online correction facility is available, enter the existing information and the proposed correct information as instructed.',
+        'Upload supporting documents in the format accepted by the official system, if online document submission is available.',
+        'Review the correction request carefully before submitting it.',
+        'Pay the applicable correction fee if required and save the payment receipt or application reference.',
+        'Respond to any additional verification request from the registrar or relevant authority.',
+        'Follow the official instructions after the correction decision and collect the corrected record if approved.'
       ],
 
       offline: [
-        'Visit the registrar’s office where the marriage was originally recorded.',
-        'Explain which information needs correction.',
-        'Ask about the applicable legal procedure and required documents.',
-        'Complete the correction application if required.',
-        'Attach the existing marriage certificate and supporting official documents.',
-        'Submit the application to the responsible registrar.',
-        'Pay the applicable fee if required.',
-        'Respond to any additional document or verification request.',
-        'Wait for the authority’s decision.',
-        'Collect the corrected document or confirmation after approval.'
+        'Visit the office of the registrar who originally recorded the marriage.',
+        'Explain clearly which information in the marriage registration record is incorrect.',
+        'Provide the existing marriage certificate or Kabinnama and the registration number if available.',
+        'Ask the registrar about the legal correction process and the official supporting documents required.',
+        'Prepare the bride’s and groom’s identity documents and other official records that prove the correct information.',
+        'Complete the prescribed correction application or written request if required.',
+        'Attach the existing marriage certificate and supporting documents to the correction request.',
+        'Submit the application to the responsible registrar or appropriate authority.',
+        'Pay the applicable fee, if required, and obtain an official receipt.',
+        'Attend any hearing or provide additional evidence if requested by the authority.',
+        'Wait for the registrar or relevant authority to review the correction request.',
+        'After approval, collect the corrected document or official confirmation and check the updated information.'
       ]
     },
 
