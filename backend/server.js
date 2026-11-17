@@ -1,4 +1,5 @@
 const userRoutes = require('./routes/userRoutes');
+const documentRoutes = require('./routes/documentRoutes');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -15,6 +16,9 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 // User Profile Routes
 app.use('/api/users', userRoutes);
+
+// Personal Document Routes
+app.use('/api/documents', documentRoutes);
 
 // Home Route
 app.get('/', (req, res) => {
