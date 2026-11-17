@@ -75,4 +75,58 @@ router.get('/', verifyToken, async (req, res) => {
   }
 });
 
+const fs = require('fs');
+const path = require('path');
+
+// Delete Personal Document
+router.delete('/:id', verifyToken, async (req, res) => {
+  try {
+    const documentId = req.params.id;
+
+    // Find document belonging to logged-in user
+    const [documents] = await db.query(
+      `SELECT id, file_name
+       FROM personal_documents
+       WHERE id = ? AND user_id = ?`,
+      [documentId, req.user.id]
+    );
+
+    if (documents.length === 0) {
+      return res.status(404).json({
+        message: 'Document not found.'
+      });
+    }
+
+    const filePath = path.join(
+      __dirname,
+      '../uploads',
+      documents[0].file_name
+    );
+
+    // Delete document record from database
+    await db.query(
+      `DELETE FROM personal_documents
+       WHERE id = ? AND user_id = ?`,
+      [documentId, req.user.id]
+    );
+
+    // Delete physical file if it exists
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+
+    res.status(200).json({
+      message: 'Document deleted successfully!'
+    });
+
+  } catch (error) {
+    console.error('Document delete error:', error.message);
+
+    res.status(500).json({
+      message: 'Document deletion failed.'
+    });
+  }
+});
+
+
 module.exports = router;
