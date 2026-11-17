@@ -1,5 +1,6 @@
 const userRoutes = require('./routes/userRoutes');
 const documentRoutes = require('./routes/documentRoutes');
+const savedServiceRoutes = require('./routes/savedServiceRoutes');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -19,6 +20,8 @@ app.use('/api/users', userRoutes);
 
 // Personal Document Routes
 app.use('/api/documents', documentRoutes);
+//saved service routes
+app.use('/api/saved-services', savedServiceRoutes);
 
 // Home Route
 app.get('/', (req, res) => {
