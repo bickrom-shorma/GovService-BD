@@ -1,6 +1,7 @@
 const userRoutes = require('./routes/userRoutes');
 const documentRoutes = require('./routes/documentRoutes');
 const savedServiceRoutes = require('./routes/savedServiceRoutes');
+const checklistRoutes = require('./routes/checklistRoutes');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -17,11 +18,12 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 // User Profile Routes
 app.use('/api/users', userRoutes);
-
 // Personal Document Routes
 app.use('/api/documents', documentRoutes);
 //saved service routes
 app.use('/api/saved-services', savedServiceRoutes);
+//checklistRoutes
+app.use('/api/checklists', checklistRoutes);
 
 // Home Route
 app.get('/', (req, res) => {
