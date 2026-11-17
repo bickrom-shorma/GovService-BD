@@ -1,4 +1,3 @@
-
 .account-container {
   display: flex;
   width: 100%;
@@ -7,7 +6,6 @@
 }
 
 /* Sidebar */
-
 .account-sidebar {
   width: 270px;
   flex-shrink: 0;
@@ -22,7 +20,7 @@
   color: #075ed8;
   font-size: 23px;
   font-weight: 700;
-  margin-bottom: 25px;
+  margin: 0 0 25px;
 }
 
 .account-user {
@@ -33,6 +31,7 @@
   background: #f2f6fc;
   border-radius: 10px;
   margin-bottom: 22px;
+  min-width: 0;
 }
 
 .account-avatar,
@@ -52,6 +51,7 @@
   font-size: 15px;
   margin: 0;
   color: #222;
+  overflow-wrap: anywhere;
 }
 
 .account-user p {
@@ -60,8 +60,7 @@
   margin: 4px 0 0;
 }
 
-/* Sidebar Menu */
-
+/* Sidebar menu */
 .account-menu {
   display: flex;
   flex-direction: column;
@@ -81,7 +80,7 @@
   font-size: 14px;
   text-align: left;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .account-menu-item:hover {
@@ -112,8 +111,7 @@
   color: #c82333;
 }
 
-/* Main Content */
-
+/* Main content */
 .account-main {
   flex: 1;
   min-width: 0;
@@ -124,6 +122,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 15px;
   margin-bottom: 30px;
   padding-bottom: 18px;
   border-bottom: 1px solid #e5e9f0;
@@ -142,20 +141,20 @@
 }
 
 /* Overview */
-
 .account-overview h2,
-.account-section h2 {
+.account-section > h2 {
   font-size: 22px;
   font-weight: 700;
   color: #222;
-  margin-bottom: 10px;
+  margin: 0 0 10px;
 }
 
 .account-overview > p,
 .account-section > p {
   color: #777;
   font-size: 15px;
-  margin-bottom: 25px;
+  margin: 0 0 25px;
+  line-height: 1.6;
 }
 
 .overview-profile-card {
@@ -184,6 +183,8 @@
 .overview-profile-card p {
   color: #777;
   font-size: 14px;
+  margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .overview-cards {
@@ -198,7 +199,7 @@
   border-radius: 10px;
   border: 1px solid #e8edf4;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.03);
-  transition: 0.3s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   text-align: left;
   cursor: pointer;
 }
@@ -234,17 +235,12 @@
   margin: 0;
 }
 
-/* Section */
-
+/* Shared section */
 .account-section {
   background: #fff;
   padding: 25px;
   border-radius: 10px;
   border: 1px solid #e8edf4;
-}
-
-.account-section > h2 {
-  margin-bottom: 10px;
 }
 
 .account-empty-state {
@@ -289,8 +285,7 @@
   background: #064bb0;
 }
 
-/* Personal Information */
-
+/* Personal information */
 .profile-section-header {
   display: flex;
   justify-content: space-between;
@@ -299,51 +294,93 @@
   margin-bottom: 25px;
 }
 
+.profile-section-header h2 {
+  margin: 0 0 8px;
+  color: #222;
+  font-size: 22px;
+}
+
 .profile-section-header p {
   color: #777;
   font-size: 14px;
+  margin: 0;
+  line-height: 1.5;
 }
 
 .profile-form {
-  max-width: 700px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.profile-form-group {
+.profile-subsection {
+  margin: 15px 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e8edf4;
+}
+
+.profile-subsection h3 {
+  color: #075ed8;
+  font-size: 18px;
+  margin: 0 0 6px;
+}
+
+.profile-subsection p {
+  color: #777;
+  font-size: 13px;
+  margin: 0;
+}
+
+.profile-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px 22px;
+}
+
+.profile-form-group,
+.account-form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 10px;
+  min-width: 0;
 }
 
 .profile-form-group label,
-.feedback-form label {
+.account-form-group label {
   font-size: 14px;
   font-weight: 600;
   color: #333;
 }
 
 .profile-form-group input,
-.profile-form-group textarea {
+.profile-form-group textarea,
+.profile-form-group select,
+.account-form-group input {
   width: 100%;
+  min-width: 0;
   padding: 12px;
   border: 1px solid #d5dce5;
   border-radius: 7px;
   outline: none;
   font-size: 14px;
   font-family: inherit;
+  background: #fff;
+  color: #333;
 }
 
 .profile-form-group input:focus,
-.profile-form-group textarea:focus {
+.profile-form-group textarea:focus,
+.profile-form-group select:focus,
+.account-form-group input:focus {
   border-color: #075ed8;
   box-shadow: 0 0 0 3px rgba(7, 94, 216, 0.1);
 }
 
 .profile-form-group input:disabled,
-.profile-form-group textarea:disabled {
+.profile-form-group textarea:disabled,
+.profile-form-group select:disabled {
   background: #f5f7fb;
   color: #555;
   cursor: not-allowed;
@@ -353,13 +390,27 @@
   resize: vertical;
 }
 
+.profile-address-card {
+  background: #f8faff;
+  border: 1px solid #e8edf4;
+  border-radius: 9px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.profile-address-card h3 {
+  font-size: 16px;
+  color: #333;
+  margin: 0 0 18px;
+}
+
 .profile-form-actions {
   display: flex;
   gap: 12px;
+  margin-top: 10px;
 }
 
 /* Buttons */
-
 .account-action-button {
   width: fit-content;
   padding: 12px 25px;
@@ -370,6 +421,7 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
 
 .account-action-button:hover {
@@ -382,45 +434,15 @@
   color: #333;
   border: none;
   border-radius: 7px;
+  font-size: 14px;
   cursor: pointer;
 }
 
-/* Feedback Form */
-
-.feedback-form {
-  max-width: 650px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
+.profile-cancel-button:hover {
+  background: #dfe3e7;
 }
 
-.feedback-form input,
-.feedback-form select,
-.feedback-form textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #d5dce5;
-  border-radius: 7px;
-  outline: none;
-  font-size: 14px;
-  font-family: inherit;
-  margin-bottom: 10px;
-}
-
-.feedback-form input:focus,
-.feedback-form select:focus,
-.feedback-form textarea:focus {
-  border-color: #075ed8;
-  box-shadow: 0 0 0 3px rgba(7, 94, 216, 0.1);
-}
-
-.feedback-form textarea {
-  resize: vertical;
-}
-
-/* Saved Services */
-
+/* Saved services */
 .saved-services-list {
   display: flex;
   flex-direction: column;
@@ -431,13 +453,32 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 15px;
   padding: 15px;
   background: #f8faff;
   border: 1px solid #e8edf4;
   border-radius: 8px;
 }
 
-.saved-service-item button {
+.saved-service-info {
+  min-width: 0;
+}
+
+.saved-service-item h3 {
+  color: #333;
+  font-size: 16px;
+  margin: 0 0 6px;
+  overflow-wrap: anywhere;
+}
+
+.saved-service-item p {
+  color: #777;
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+
+.saved-service-item > button {
+  flex-shrink: 0;
   border: none;
   background: #fff0f1;
   color: #dc3545;
@@ -446,8 +487,189 @@
   cursor: pointer;
 }
 
-/* Account Settings */
+.saved-service-item > button:hover {
+  background: #ffe0e3;
+}
 
+/* Checklist */
+.checklist-service-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 600px;
+  margin: 20px 0;
+}
+
+.checklist-service-selector label {
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.checklist-service-selector select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d5dce5;
+  border-radius: 7px;
+  background: #fff;
+  font: inherit;
+  color: #333;
+}
+
+.checklist-service-selector select:focus {
+  outline: none;
+  border-color: #075ed8;
+  box-shadow: 0 0 0 3px rgba(7, 94, 216, 0.1);
+}
+
+.checklist-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 18px;
+  margin: 15px 0 20px;
+  background: #f8faff;
+  border: 1px solid #e8edf4;
+  border-radius: 8px;
+}
+
+.checklist-heading h3 {
+  margin: 0 0 5px;
+  color: #333;
+  font-size: 17px;
+}
+
+.checklist-heading p {
+  margin: 0;
+  color: #777;
+  font-size: 13px;
+}
+
+.checklist-progress {
+  padding: 18px;
+  margin-bottom: 20px;
+  background: #f8faff;
+  border: 1px solid #e8edf4;
+  border-radius: 8px;
+}
+
+.checklist-progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  color: #444;
+  font-size: 14px;
+}
+
+.checklist-progress-info strong {
+  color: #075ed8;
+  text-align: right;
+}
+
+.checklist-progress-track {
+  height: 10px;
+  overflow: hidden;
+  background: #e2e9f3;
+  border-radius: 20px;
+}
+
+.checklist-progress-fill {
+  height: 100%;
+  background: #075ed8;
+  border-radius: inherit;
+  transition: width 0.2s ease;
+}
+
+.checklist-document-list {
+  padding: 18px;
+  border: 1px solid #e8edf4;
+  border-radius: 8px;
+}
+
+.checklist-document-list h3 {
+  margin: 0 0 12px;
+  color: #333;
+  font-size: 16px;
+}
+
+.checklist-document-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 4px;
+  border-bottom: 1px solid #edf0f5;
+  color: #444;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.checklist-document-item:last-child {
+  border-bottom: none;
+}
+
+.checklist-document-item input {
+  width: 17px;
+  height: 17px;
+  accent-color: #075ed8;
+  cursor: pointer;
+}
+
+.checklist-completed-message {
+  margin: 18px 0 0;
+  padding: 12px 15px;
+  border-radius: 7px;
+  background: #eaf8ef;
+  color: #217a40;
+  font-size: 14px;
+}
+
+/* Downloads */
+.downloads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.download-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 16px;
+  background: #f8faff;
+  border: 1px solid #e8edf4;
+  border-radius: 8px;
+}
+
+.download-item h4 {
+  color: #333;
+  font-size: 15px;
+  margin: 0 0 6px;
+  overflow-wrap: anywhere;
+}
+
+.download-item p {
+  color: #777;
+  font-size: 13px;
+  margin: 0;
+}
+
+.download-item a {
+  flex-shrink: 0;
+  color: #075ed8;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.download-item a:hover {
+  text-decoration: underline;
+}
+
+/* Account settings */
 .settings-item {
   display: flex;
   justify-content: space-between;
@@ -466,9 +688,11 @@
 .settings-item p {
   color: #777;
   font-size: 13px;
+  margin: 0;
 }
 
 .settings-link {
+  flex-shrink: 0;
   border: none;
   background: #e8f1ff;
   color: #075ed8;
@@ -478,13 +702,23 @@
   font-weight: 600;
 }
 
-.settings-status {
-  font-size: 12px;
-  color: #888;
+.settings-link:hover {
+  background: #dceaff;
+}
+
+.account-form {
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.account-form-group input {
+  box-sizing: border-box;
 }
 
 /* Responsive */
-
 @media (max-width: 1100px) {
   .overview-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -498,6 +732,7 @@
 
   .account-sidebar {
     width: 100%;
+    box-sizing: border-box;
     border-right: none;
     border-bottom: 1px solid #e5e9f0;
   }
@@ -524,6 +759,31 @@
   }
 }
 
+@media (max-width: 600px) {
+  .profile-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-address-card {
+    padding: 15px;
+  }
+
+  .checklist-heading,
+  .download-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .checklist-progress-info {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .checklist-progress-info strong {
+    text-align: left;
+  }
+}
+
 @media (max-width: 500px) {
   .profile-section-header {
     align-items: flex-start;
@@ -538,13 +798,26 @@
     flex-direction: column;
   }
 
-  .profile-form-actions button {
+  .profile-form-actions button,
+  .profile-section-header > button {
     width: 100%;
   }
 
   .saved-service-item {
     align-items: flex-start;
     flex-direction: column;
-    gap: 12px;
+  }
+
+  .saved-service-item > button {
+    width: 100%;
+  }
+
+  .account-section {
+    padding: 18px 14px;
+  }
+
+  .account-topbar {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
