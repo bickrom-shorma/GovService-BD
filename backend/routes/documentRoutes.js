@@ -49,5 +49,30 @@ router.post(
     }
   }
 );
+// Get All Personal Documents
+router.get('/', verifyToken, async (req, res) => {
+  try {
+    const [documents] = await db.query(
+      `SELECT id, document_name, document_type,
+              file_name, file_path, uploaded_at
+       FROM personal_documents
+       WHERE user_id = ?
+       ORDER BY uploaded_at DESC`,
+      [req.user.id]
+    );
+
+    res.status(200).json({
+      message: 'Documents retrieved successfully!',
+      documents
+    });
+
+  } catch (error) {
+    console.error('Get documents error:', error.message);
+
+    res.status(500).json({
+      message: 'Failed to retrieve documents.'
+    });
+  }
+});
 
 module.exports = router;
