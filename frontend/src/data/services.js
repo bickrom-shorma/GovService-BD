@@ -51,4 +51,4 @@ const servicesData = {
   },
 };
 
-export default servicesData;
+module.exports = servicesData;

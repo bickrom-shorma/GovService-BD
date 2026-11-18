@@ -3,6 +3,8 @@ const documentRoutes = require('./routes/documentRoutes');
 const savedServiceRoutes = require('./routes/savedServiceRoutes');
 const checklistRoutes = require('./routes/checklistRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
+const aiRoutes = require('./routes/aiRoutes');
+const serviceRoutes = require('./routes/serviceRoutes');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -25,6 +27,10 @@ app.use('/api/documents', documentRoutes);
 app.use('/api/saved-services', savedServiceRoutes);
 //checklistRoutes
 app.use('/api/checklists', checklistRoutes);
+// AI Assistant Routes
+app.use('/api/ai', aiRoutes);
+// Service Information Routes
+app.use('/api/services', serviceRoutes);
 //feedbackroutes
 app.use('/api/feedback', feedbackRoutes);
 // Home Route
