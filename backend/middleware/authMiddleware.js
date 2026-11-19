@@ -1,10 +1,10 @@
 
 const jwt = require('jsonwebtoken');
+const { getJwtSecret } = require('../utils/jwtSecret');
 
 // JWT Authentication Middleware
 const verifyToken = (req, res, next) => {
   try {
-    // Get token from request header
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -14,19 +14,11 @@ const verifyToken = (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, getJwtSecret());
 
-    // Verify JWT Token
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET
-    );
-
-    // Attach user information to request
     req.user = decoded;
-
     next();
-
-  } catch (error) {
+  } catch {
     return res.status(401).json({
       message: 'Invalid or expired token.'
     });

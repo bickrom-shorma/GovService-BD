@@ -1,39 +1,41 @@
-
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
+import { apiRequest } from '../utils/api';
 import './AIAssistant.css';
 
 function AIAssistant() {
+  const { language, t, translateMessage } = useLanguage();
   const [message, setMessage] = useState('');
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState(null);
+  const [confirmReset, setConfirmReset] = useState(false);
 
   const [chatHistory, setChatHistory] = useState(() => {
     try {
-      return JSON.parse(
-        localStorage.getItem('aiChatHistory') || '[]'
-      );
+      const parsed = JSON.parse(localStorage.getItem('aiChatHistory') || '[]');
+      return Array.isArray(parsed)
+        ? parsed.filter((item) => item && typeof item.text === 'string' && item.sender)
+        : [];
     } catch {
       return [];
     }
   });
 
   const chatContentRef = useRef(null);
+  const idCounterRef = useRef(1);
 
-  const suggestions = [
-    'How can I apply for a new NID?',
-    'What documents are required for a passport?',
-    'How can I register a birth certificate?',
-    'What is the driving licence application process?',
-  ];
+  const nextId = () => {
+    idCounterRef.current += 1;
+    return idCounterRef.current;
+  };
 
-  // Save chat history
+  const suggestions = t('aiSuggestions');
+
   useEffect(() => {
-    localStorage.setItem(
-      'aiChatHistory',
-      JSON.stringify(chatHistory)
-    );
+    localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
   }, [chatHistory]);
 
-  // Automatically scroll to latest message
   useEffect(() => {
     if (chatContentRef.current) {
       chatContentRef.current.scrollTo({
@@ -41,53 +43,71 @@ function AIAssistant() {
         behavior: 'smooth',
       });
     }
-  }, [chatHistory]);
+  }, [chatHistory, sending]);
 
-  // Send message
-  const handleSend = (text = message) => {
+  const handleSend = async (text = message) => {
     const userMessage = text.trim();
+    if (!userMessage || sending) return;
 
-    if (!userMessage) return;
+    setError(null);
+    setConfirmReset(false);
+    const userEntry = {
+      id: `u-${nextId()}`,
+      sender: 'user',
+      text: userMessage,
+    };
 
-    const timestamp = Date.now();
-
-    const newMessages = [
-      ...chatHistory,
-      {
-        id: timestamp,
-        sender: 'user',
-        text: userMessage,
-      },
-      {
-        id: timestamp + 1,
-        sender: 'ai',
-        text:
-          'Thank you for your question! AI responses will be available after connecting the AI backend. Please verify important government service information with official sources.',
-      },
-    ];
-
-    setChatHistory(newMessages);
+    const nextHistory = [...chatHistory, userEntry];
+    setChatHistory(nextHistory);
     setMessage('');
+    setSending(true);
+
+    try {
+      const data = await apiRequest('/api/ai/chat', {
+        method: 'POST',
+        body: JSON.stringify({
+          message: userMessage,
+          language,
+          history: chatHistory.slice(-8),
+        }),
+      });
+
+      const replyText = typeof data?.reply === 'string' ? data.reply.trim() : '';
+      if (!replyText) {
+        setError({ raw: data?.message || '', fallbackKey: 'aiUnavailableError' });
+        return;
+      }
+
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          id: `a-${nextId()}`,
+          sender: 'ai',
+          text: replyText,
+        },
+      ]);
+    } catch (err) {
+      setError({ raw: err?.message || '', fallbackKey: 'aiUnavailableError' });
+    } finally {
+      setSending(false);
+    }
   };
 
-  // Submit message
   const handleSubmit = (e) => {
     e.preventDefault();
     handleSend();
   };
 
-  // Start new chat
   const handleNewChat = () => {
     if (chatHistory.length === 0) return;
+    setConfirmReset(true);
+  };
 
-    const confirmNewChat = window.confirm(
-      'Are you sure you want to start a new chat? Your current conversation will be deleted.'
-    );
-
-    if (confirmNewChat) {
-      setChatHistory([]);
-      setMessage('');
-    }
+  const confirmClearChat = () => {
+    setChatHistory([]);
+    setMessage('');
+    setError(null);
+    setConfirmReset(false);
   };
 
   return (
@@ -100,8 +120,8 @@ function AIAssistant() {
             <div className="ai-avatar">🤖</div>
 
             <div>
-              <h3>GovService AI Assistant</h3>
-              <span>Government Service Help Center</span>
+              <h3>{t('aiTitle')}</h3>
+              <span>{t('aiSubtitle')}</span>
             </div>
           </div>
 
@@ -110,15 +130,38 @@ function AIAssistant() {
               className="ai-new-chat-button"
               onClick={handleNewChat}
               type="button"
+              disabled={chatHistory.length === 0}
             >
-              + New Chat
+              {t('newChat')}
             </button>
 
             <Link to="/" className="ai-home-button">
-              Home
+              {t('home')}
             </Link>
           </div>
         </div>
+
+        {confirmReset && (
+          <div className="alert alert-warning d-flex align-items-center justify-content-between m-3 mb-0 py-2 px-3">
+            <span style={{ fontSize: '13px' }}>{t('confirmNewChatMsg')}</span>
+            <div className="d-flex gap-2">
+              <button
+                type="button"
+                className="btn btn-sm btn-danger"
+                onClick={confirmClearChat}
+              >
+                {t('confirmYes')}
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-secondary"
+                onClick={() => setConfirmReset(false)}
+              >
+                {t('cancel')}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Chat Content */}
         <div
@@ -130,17 +173,13 @@ function AIAssistant() {
               <div className="ai-welcome">
                 <div className="ai-welcome-icon">🤖</div>
 
-                <h2>How can I help you today?</h2>
+                <h2>{t('aiWelcomeTitle')}</h2>
 
-                <p>
-                  Ask me anything about Bangladesh government
-                  services, required documents, application
-                  procedures, fees and other information.
-                </p>
+                <p>{t('aiWelcomeDesc')}</p>
               </div>
 
               <div className="ai-suggestions">
-                <h4>Suggested Questions</h4>
+                <h4>{t('suggestedQuestions')}</h4>
 
                 <div className="suggestion-list">
                   {suggestions.map((item, index) => (
@@ -149,6 +188,7 @@ function AIAssistant() {
                       className="suggestion-button"
                       onClick={() => handleSend(item)}
                       type="button"
+                      disabled={sending}
                     >
                       {item}
                       <span>→</span>
@@ -168,14 +208,29 @@ function AIAssistant() {
                     {chat.sender === 'user' ? '👤' : '🤖'}
                   </div>
 
-                  <div className="chat-message-text">
+                  <div className="chat-message-text" style={{ whiteSpace: 'pre-wrap' }}>
                     {chat.text}
                   </div>
                 </div>
               ))}
+
+              {sending && (
+                <div className="chat-message ai">
+                  <div className="chat-message-avatar">🤖</div>
+                  <div className="chat-message-text text-muted">
+                    {t('aiThinking')}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
+
+        {error && (
+          <div className="alert alert-danger mx-4 my-2 py-2 px-3" style={{ fontSize: '13px' }}>
+            {translateMessage(error.raw, error.fallbackKey)}
+          </div>
+        )}
 
         {/* Message Input */}
         <form
@@ -184,22 +239,22 @@ function AIAssistant() {
         >
           <input
             type="text"
-            placeholder="Ask your question..."
+            placeholder={t('askPlaceholder')}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            disabled={sending}
           />
 
           <button
             type="submit"
-            disabled={!message.trim()}
+            disabled={!message.trim() || sending}
           >
-            Send
+            {sending ? t('sending') : t('send')}
           </button>
         </form>
 
         <p className="ai-footer-note">
-          AI responses are currently in demo mode.
-          Please verify important information with official sources.
+          {t('aiFooterNote')}
         </p>
 
       </div>

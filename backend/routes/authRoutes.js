@@ -1,23 +1,40 @@
-
-const express = require('express'); const jwt = require('jsonwebtoken');
+const express = require('express');
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const db = require('../config/db');
+const verifyToken = require('../middleware/authMiddleware');
+const { getJwtSecret } = require('../utils/jwtSecret');
 
 const router = express.Router();
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // User Registration API
 router.post('/register', async (req, res) => {
   try {
-    const { full_name, email, phone, password } = req.body;
+    const full_name = String(req.body.full_name || '').trim();
+    const email = String(req.body.email || '').trim().toLowerCase();
+    const phone = String(req.body.phone || '').trim();
+    const password = String(req.body.password || '');
 
-    // Check required fields
     if (!full_name || !email || !password) {
       return res.status(400).json({
         message: 'Full name, email and password are required.'
       });
     }
 
-    // Check existing email
+    if (!EMAIL_REGEX.test(email)) {
+      return res.status(400).json({
+        message: 'Please provide a valid email address.'
+      });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({
+        message: 'Password must be at least 8 characters long.'
+      });
+    }
+
     const [existingUser] = await db.query(
       'SELECT id FROM users WHERE email = ?',
       [email]
@@ -29,10 +46,8 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Save user
     const [result] = await db.query(
       `INSERT INTO users
       (full_name, email, phone, password_hash)
@@ -40,34 +55,46 @@ router.post('/register', async (req, res) => {
       [full_name, email, phone || null, hashedPassword]
     );
 
-    res.status(201).json({
-      message: 'Registration successful!',
-      userId: result.insertId
-    });
+    const user = {
+      id: result.insertId,
+      full_name,
+      email,
+      phone: phone || null,
+      role: 'user'
+    };
 
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      getJwtSecret(),
+      { expiresIn: '1d' }
+    );
+
+    return res.status(201).json({
+      message: 'Registration successful!',
+      userId: result.insertId,
+      token,
+      user
+    });
   } catch (error) {
     console.error('Registration error:', error.message);
-
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Registration failed. Please try again.'
     });
   }
 });
 
-
 // User Login API
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const email = String(req.body.email || '').trim().toLowerCase();
+    const password = String(req.body.password || '');
 
-    // Check required fields
     if (!email || !password) {
       return res.status(400).json({
         message: 'Email and password are required.'
       });
     }
 
-    // Find user by email
     const [users] = await db.query(
       'SELECT * FROM users WHERE email = ?',
       [email]
@@ -81,30 +108,30 @@ router.post('/login', async (req, res) => {
 
     const user = users[0];
 
-    // Verify password
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      user.password_hash
-    );
+    if (user.is_active === 0) {
+      return res.status(403).json({
+        message: 'Your account has been deactivated. Please contact support.'
+      });
+    }
 
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordValid) {
       return res.status(401).json({
         message: 'Invalid email or password.'
       });
     }
 
-    // Generate JWT Token
     const token = jwt.sign(
       {
         id: user.id,
         email: user.email,
         role: user.role
       },
-      process.env.JWT_SECRET,
+      getJwtSecret(),
       { expiresIn: '1d' }
     );
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Login successful!',
       token,
       user: {
@@ -115,60 +142,65 @@ router.post('/login', async (req, res) => {
         role: user.role
       }
     });
-
   } catch (error) {
     console.error('Login error:', error.message);
-
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Login failed. Please try again.'
     });
   }
 });
 
+// Get Current Logged-in User
+router.get('/me', verifyToken, async (req, res) => {
+  try {
+    const [users] = await db.query(
+      `SELECT id, full_name, email, phone, role, is_active, created_at
+       FROM users
+       WHERE id = ?`,
+      [req.user.id]
+    );
+
+    if (users.length === 0) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    if (users[0].is_active === 0) {
+      return res.status(403).json({ message: 'Account is deactivated.' });
+    }
+
+    return res.status(200).json({ user: users[0] });
+  } catch (error) {
+    console.error('Get current user error:', error.message);
+    return res.status(500).json({ message: 'Failed to retrieve current user.' });
+  }
+});
+
 // Change Password API
-router.put('/change-password', async (req, res) => {
+router.put('/change-password', verifyToken, async (req, res) => {
   try {
     const { currentPassword, newPassword, confirmPassword } = req.body;
 
-    // Check required fields
     if (!currentPassword || !newPassword || !confirmPassword) {
       return res.status(400).json({
         message: 'All password fields are required.'
       });
     }
 
-    // Check new password length
-    if (newPassword.length < 8) {
+    if (String(newPassword).length < 8) {
       return res.status(400).json({
         message: 'New password must be at least 8 characters long.'
       });
     }
 
-    // Check password confirmation
     if (newPassword !== confirmPassword) {
       return res.status(400).json({
         message: 'New password and confirm password do not match.'
       });
     }
 
-    // Get JWT token from Authorization header
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({
-        message: 'Authentication token is required.'
-      });
-    }
-
-    const token = authHeader.split(' ')[1];
-
-    // Verify JWT token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Find logged-in user
     const [users] = await db.query(
       'SELECT id, password_hash FROM users WHERE id = ?',
-      [decoded.id]
+      [req.user.id]
     );
 
     if (users.length === 0) {
@@ -177,12 +209,9 @@ router.put('/change-password', async (req, res) => {
       });
     }
 
-    const user = users[0];
-
-    // Verify current password
     const isPasswordValid = await bcrypt.compare(
       currentPassword,
-      user.password_hash
+      users[0].password_hash
     );
 
     if (!isPasswordValid) {
@@ -191,44 +220,28 @@ router.put('/change-password', async (req, res) => {
       });
     }
 
-    // Prevent using the same password
     if (currentPassword === newPassword) {
       return res.status(400).json({
         message: 'New password must be different from current password.'
       });
     }
 
-    // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    // Update password in database
     await db.query(
       'UPDATE users SET password_hash = ? WHERE id = ?',
-      [hashedPassword, decoded.id]
+      [hashedPassword, req.user.id]
     );
 
     return res.status(200).json({
       message: 'Password changed successfully!'
     });
-
   } catch (error) {
     console.error('Change password error:', error.message);
-
-    if (
-      error.name === 'JsonWebTokenError' ||
-      error.name === 'TokenExpiredError'
-    ) {
-      return res.status(401).json({
-        message: 'Invalid or expired authentication token.'
-      });
-    }
-
     return res.status(500).json({
       message: 'Password change failed. Please try again.'
     });
   }
 });
-
-
 
 module.exports = router;

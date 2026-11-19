@@ -1,17 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import servicesData from '../data/services';
 import serviceDetailsData from '../data/serviceDetailsData';
+import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import { apiRequest, fetchProtectedBlob } from '../utils/api';
 import './Profile.css';
-
-const readLocalStorage = (key, fallback) => {
-  try {
-    const value = localStorage.getItem(key);
-    return value ? JSON.parse(value) : fallback;
-  } catch {
-    return fallback;
-  }
-};
 
 const initialProfile = {
   fullName: '',
@@ -51,79 +45,170 @@ const allServices = Object.entries(servicesData).flatMap(
     }))
 );
 
-const menuItems = [
-  { name: 'Overview', icon: '📊' },
-  { name: 'Personal Information', icon: '👤' },
-  { name: 'Saved Services', icon: '⭐' },
-  { name: 'My Document Checklist', icon: '📋' },
-  { name: 'My Downloads', icon: '📁' },
-  { name: 'Account Settings', icon: '⚙️' },
-];
-
 function Profile() {
+  const { user, logout, refreshUser } = useAuth();
+  const {
+    t,
+    categoryTitle,
+    serviceName,
+    getServiceDetails,
+    translateMessage,
+    feedbackTypeLabel,
+    feedbackStatusLabel,
+    overviewCardDesc,
+  } = useLanguage();
+  const navigate = useNavigate();
+
   const [activeSection, setActiveSection] = useState('Overview');
   const [isEditing, setIsEditing] = useState(false);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [savingProfile, setSavingProfile] = useState(false);
 
-  const [profile, setProfile] = useState(() => ({
+  const [statusNotice, setStatusNotice] = useState(null);
+
+  const [profile, setProfile] = useState({
     ...initialProfile,
-    ...readLocalStorage('profileInformation', {}),
-    presentAddress: {
-      ...initialProfile.presentAddress,
-      ...(readLocalStorage('profileInformation', {}).presentAddress || {}),
-    },
-    permanentAddress: {
-      ...initialProfile.permanentAddress,
-      ...(readLocalStorage('profileInformation', {}).permanentAddress || {}),
-    },
-  }));
+    fullName: user?.full_name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+  });
+  const [savedSnapshot, setSavedSnapshot] = useState(profile);
 
-  const [savedServices, setSavedServices] = useState(() =>
-    readLocalStorage('savedServices', [])
-  );
-
+  const [savedServices, setSavedServices] = useState([]);
   const [selectedChecklistService, setSelectedChecklistService] = useState(
     allServices[0]?.id || ''
   );
+  const [checklistProgress, setChecklistProgress] = useState({});
 
-  const [checklistProgress, setChecklistProgress] = useState(() =>
-    readLocalStorage('checklistProgress', {})
-  );
+  const [downloadHistory] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('downloadHistory') || '[]');
+    } catch {
+      return [];
+    }
+  });
 
-  const [downloadHistory] = useState(() =>
-    readLocalStorage('downloadHistory', [])
-  );
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [feedbackForm, setFeedbackForm] = useState({
+    feedback_type: 'Suggestion',
+    subject: '',
+    message: '',
+  });
+  const [submittingFeedback, setSubmittingFeedback] = useState(false);
 
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
   });
+  const [updatingPassword, setUpdatingPassword] = useState(false);
+
+  const menuItems = useMemo(
+    () => [
+      { key: 'Overview', label: t('menuOverview'), icon: '📊' },
+      { key: 'Personal Information', label: t('menuPersonal'), icon: '👤' },
+      { key: 'Saved Services', label: t('menuSaved'), icon: '⭐' },
+      { key: 'My Document Checklist', label: t('menuChecklist'), icon: '📋' },
+      { key: 'My Downloads', label: t('menuDownloads'), icon: '📁' },
+      { key: 'Feedback & Reports', label: t('menuFeedback'), icon: '💬' },
+      { key: 'Account Settings', label: t('menuSettings'), icon: '⚙️' },
+    ],
+    [t]
+  );
+
+  useEffect(() => {
+    let active = true;
+    Promise.all([
+      apiRequest('/api/users/profile'),
+      apiRequest('/api/saved-services'),
+      apiRequest('/api/checklists'),
+      apiRequest('/api/feedback'),
+    ])
+      .then(([profileRes, savedRes, checklistRes, feedbackRes]) => {
+        if (!active) return;
+
+        if (profileRes?.profile) {
+          const merged = {
+            ...initialProfile,
+            ...profileRes.profile,
+            presentAddress: {
+              ...initialProfile.presentAddress,
+              ...(profileRes.profile.presentAddress || {}),
+            },
+            permanentAddress: {
+              ...initialProfile.permanentAddress,
+              ...(profileRes.profile.permanentAddress || {}),
+            },
+          };
+          setProfile(merged);
+          setSavedSnapshot(merged);
+        }
+
+        if (Array.isArray(savedRes?.services)) {
+          setSavedServices(savedRes.services);
+        }
+
+        if (Array.isArray(checklistRes?.checklists)) {
+          const mapped = {};
+          checklistRes.checklists.forEach((row) => {
+            if (!mapped[row.service_key]) mapped[row.service_key] = {};
+            mapped[row.service_key][row.document_name] = Boolean(row.is_completed);
+          });
+          setChecklistProgress(mapped);
+        }
+
+        if (Array.isArray(feedbackRes?.feedbacks)) {
+          setFeedbacks(feedbackRes.feedbacks);
+        }
+      })
+      .catch((err) => {
+        if (active) {
+          setStatusNotice({
+            type: 'danger',
+            raw: err.message,
+            fallbackKey: 'profileLoadError',
+          });
+        }
+      })
+      .finally(() => {
+        if (active) setLoadingProfile(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const refreshSaved = async () => {
+      try {
+        const res = await apiRequest('/api/saved-services');
+        if (Array.isArray(res?.services)) setSavedServices(res.services);
+      } catch {
+        // ignore
+      }
+    };
+    window.addEventListener('savedServicesUpdated', refreshSaved);
+    return () => window.removeEventListener('savedServicesUpdated', refreshSaved);
+  }, []);
 
   const selectedChecklist = useMemo(
     () => allServices.find((item) => item.id === selectedChecklistService),
     [selectedChecklistService]
   );
 
-  const checklistDetails = serviceDetailsData[selectedChecklistService];
-  const requiredDocuments = checklistDetails?.requiredDocuments || [];
+  const rawChecklistDetails = serviceDetailsData[selectedChecklistService];
+  const localizedChecklistDetails = getServiceDetails(
+    selectedChecklistService,
+    rawChecklistDetails
+  );
+  const canonicalDocuments = rawChecklistDetails?.requiredDocuments || [];
+  const displayedDocuments =
+    localizedChecklistDetails?.requiredDocuments || canonicalDocuments;
 
-  const completedDocuments = requiredDocuments.filter(
-    (document) => checklistProgress[selectedChecklistService]?.[document]
+  const completedDocuments = canonicalDocuments.filter(
+    (doc) => checklistProgress[selectedChecklistService]?.[doc]
   ).length;
-
-  useEffect(() => {
-    const updateSavedServices = () => {
-      setSavedServices(readLocalStorage('savedServices', []));
-    };
-
-    window.addEventListener('savedServicesUpdated', updateSavedServices);
-    window.addEventListener('storage', updateSavedServices);
-
-    return () => {
-      window.removeEventListener('savedServicesUpdated', updateSavedServices);
-      window.removeEventListener('storage', updateSavedServices);
-    };
-  }, []);
 
   const handleProfileChange = (event) => {
     const { name, value } = event.target;
@@ -143,91 +228,203 @@ function Profile() {
     setProfile((previous) => ({ ...previous, [name]: value }));
   };
 
-  const handleProfileSave = (event) => {
+  const handleProfileSave = async (event) => {
     event.preventDefault();
+    setStatusNotice(null);
+    setSavingProfile(true);
 
     try {
-      localStorage.setItem('profileInformation', JSON.stringify(profile));
+      await apiRequest('/api/users/profile', {
+        method: 'PUT',
+        body: JSON.stringify(profile),
+      });
+      setSavedSnapshot(profile);
       setIsEditing(false);
-      alert('Profile information saved in this browser. Backend sync is not connected yet.');
-    } catch {
-      alert('Could not save profile information in this browser.');
+      await refreshUser();
+      setStatusNotice({ type: 'success', key: 'profileUpdated' });
+    } catch (err) {
+      setStatusNotice({
+        type: 'danger',
+        raw: err.message,
+        fallbackKey: 'profileUpdateError',
+      });
+    } finally {
+      setSavingProfile(false);
     }
   };
 
   const handleProfileCancel = () => {
-    setProfile({
-      ...initialProfile,
-      ...readLocalStorage('profileInformation', {}),
-      presentAddress: {
-        ...initialProfile.presentAddress,
-        ...(readLocalStorage('profileInformation', {}).presentAddress || {}),
-      },
-      permanentAddress: {
-        ...initialProfile.permanentAddress,
-        ...(readLocalStorage('profileInformation', {}).permanentAddress || {}),
-      },
-    });
+    setProfile(savedSnapshot);
     setIsEditing(false);
   };
 
-  const handleChecklistChange = (document, checked) => {
-    setChecklistProgress((previous) => {
-      const updated = {
-        ...previous,
-        [selectedChecklistService]: {
-          ...previous[selectedChecklistService],
-          [document]: checked,
-        },
-      };
+  const handleChecklistChange = async (docName, checked) => {
+    setStatusNotice(null);
+    setChecklistProgress((previous) => ({
+      ...previous,
+      [selectedChecklistService]: {
+        ...previous[selectedChecklistService],
+        [docName]: checked,
+      },
+    }));
 
-      localStorage.setItem('checklistProgress', JSON.stringify(updated));
-      return updated;
-    });
+    try {
+      await apiRequest('/api/checklists/toggle', {
+        method: 'PUT',
+        body: JSON.stringify({
+          service_key: selectedChecklistService,
+          document_name: docName,
+          is_completed: checked,
+        }),
+      });
+    } catch (err) {
+      setStatusNotice({
+        type: 'danger',
+        raw: err.message,
+        fallbackKey: 'checklistSaveError',
+      });
+    }
   };
 
-  const handleRemoveSavedService = (serviceId) => {
-    const updatedServices = savedServices.filter(
-      (service) => service.id !== serviceId
-    );
-
-    localStorage.setItem('savedServices', JSON.stringify(updatedServices));
-    setSavedServices(updatedServices);
-    window.dispatchEvent(new Event('savedServicesUpdated'));
+  const handleRemoveSavedService = async (id) => {
+    setStatusNotice(null);
+    try {
+      await apiRequest(`/api/saved-services/${id}`, { method: 'DELETE' });
+      setSavedServices((prev) => prev.filter((item) => item.id !== id));
+      window.dispatchEvent(new Event('savedServicesUpdated'));
+    } catch (err) {
+      setStatusNotice({
+        type: 'danger',
+        raw: err.message,
+        fallbackKey: 'savedServiceRemoveError',
+      });
+    }
   };
 
-  const handlePasswordSubmit = (event) => {
+  const handleDownloadAgain = async (item) => {
+    if (!item.docId) return;
+    try {
+      const blob = await fetchProtectedBlob(`/api/documents/${item.docId}/download`);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = item.name;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+    } catch (err) {
+      setStatusNotice({
+        type: 'danger',
+        raw: err.message,
+        fallbackKey: 'downloadUnavailable',
+      });
+    }
+  };
+
+  const handleFeedbackSubmit = async (e) => {
+    e.preventDefault();
+    setStatusNotice(null);
+    setSubmittingFeedback(true);
+
+    try {
+      await apiRequest('/api/feedback', {
+        method: 'POST',
+        body: JSON.stringify(feedbackForm),
+      });
+      setFeedbackForm({ feedback_type: 'Suggestion', subject: '', message: '' });
+      const res = await apiRequest('/api/feedback');
+      setFeedbacks(res?.feedbacks || []);
+      setStatusNotice({ type: 'success', key: 'feedbackSubmitted' });
+    } catch (err) {
+      setStatusNotice({
+        type: 'danger',
+        raw: err.message,
+        fallbackKey: 'feedbackSubmitError',
+      });
+    } finally {
+      setSubmittingFeedback(false);
+    }
+  };
+
+  const handleDeleteFeedback = async (id) => {
+    try {
+      await apiRequest(`/api/feedback/${id}`, { method: 'DELETE' });
+      setFeedbacks((prev) => prev.filter((f) => f.id !== id));
+    } catch (err) {
+      setStatusNotice({
+        type: 'danger',
+        raw: err.message,
+        fallbackKey: 'feedbackDeleteError',
+      });
+    }
+  };
+
+  const handlePasswordSubmit = async (event) => {
     event.preventDefault();
+    setStatusNotice(null);
 
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      alert('New password and confirmation do not match.');
+    if (passwordForm.newPassword.length < 8) {
+      setStatusNotice({ type: 'danger', key: 'passwordMinLength' });
       return;
     }
 
-    alert('Password change is not connected to the backend yet.');
-    setPasswordForm({
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: '',
-    });
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setStatusNotice({ type: 'danger', key: 'passwordMismatch' });
+      return;
+    }
+
+    setUpdatingPassword(true);
+    try {
+      const res = await apiRequest('/api/auth/change-password', {
+        method: 'PUT',
+        body: JSON.stringify(passwordForm),
+      });
+      setStatusNotice({
+        type: 'success',
+        raw: res.message,
+        fallbackKey: 'passwordUpdated',
+      });
+      setPasswordForm({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      });
+    } catch (err) {
+      setStatusNotice({
+        type: 'danger',
+        raw: err.message,
+        fallbackKey: 'passwordUpdateError',
+      });
+    } finally {
+      setUpdatingPassword(false);
+    }
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  const activeMenuItem = menuItems.find((m) => m.key === activeSection);
+
   const renderContent = () => {
+    if (loadingProfile) {
+      return <p>{t('loading')}</p>;
+    }
+
     switch (activeSection) {
       case 'Overview':
         return (
           <div className="account-overview">
-            <h2>Welcome to My Account</h2>
-            <p>
-              Manage your government services and personal information from
-              one place.
-            </p>
+            <h2>{t('overviewTitle')}</h2>
+            <p>{t('overviewDesc')}</p>
 
             <div className="overview-profile-card">
               <div className="overview-avatar">👤</div>
               <div>
-                <h3>{profile.fullName || 'Welcome User'}</h3>
-                <p>{profile.email || 'Your email address'}</p>
+                <h3>{profile.fullName || t('welcomeUser')}</h3>
+                <p>{profile.email || t('yourEmail')}</p>
               </div>
             </div>
 
@@ -236,12 +433,15 @@ function Profile() {
                 <button
                   type="button"
                   className="overview-card"
-                  key={item.name}
-                  onClick={() => setActiveSection(item.name)}
+                  key={item.key}
+                  onClick={() => {
+                    setStatusNotice(null);
+                    setActiveSection(item.key);
+                  }}
                 >
                   <span>{item.icon}</span>
-                  <h3>{item.name}</h3>
-                  <p>View and manage your {item.name.toLowerCase()}.</p>
+                  <h3>{item.label}</h3>
+                  <p>{overviewCardDesc(item.key)}</p>
                 </button>
               ))}
             </div>
@@ -253,8 +453,8 @@ function Profile() {
           <div className="account-section">
             <div className="profile-section-header">
               <div>
-                <h2>Personal Information</h2>
-                <p>Manage your personal details and address information.</p>
+                <h2>{t('menuPersonal')}</h2>
+                <p>{t('personalInfoDesc')}</p>
               </div>
 
               {!isEditing && (
@@ -263,33 +463,33 @@ function Profile() {
                   className="account-action-button"
                   onClick={() => setIsEditing(true)}
                 >
-                  Edit Profile
+                  {t('editProfile')}
                 </button>
               )}
             </div>
 
             <form className="profile-form" onSubmit={handleProfileSave}>
               <div className="profile-subsection">
-                <h3>Personal Details</h3>
-                <p>Your basic personal information.</p>
+                <h3>{t('personalDetails')}</h3>
+                <p>{t('personalDetailsDesc')}</p>
               </div>
 
               <div className="profile-form-grid">
                 <div className="profile-form-group">
-                  <label htmlFor="fullName">Full Name</label>
+                  <label htmlFor="fullName">{t('fullNameLabel')}</label>
                   <input
                     id="fullName"
                     name="fullName"
                     value={profile.fullName}
                     onChange={handleProfileChange}
                     disabled={!isEditing}
-                    placeholder="Enter your full name"
+                    placeholder={t('fullNamePlaceholder')}
                     required
                   />
                 </div>
 
                 <div className="profile-form-group">
-                  <label htmlFor="phone">Mobile Number</label>
+                  <label htmlFor="phone">{t('mobileNumber')}</label>
                   <input
                     id="phone"
                     type="tel"
@@ -297,24 +497,23 @@ function Profile() {
                     value={profile.phone}
                     onChange={handleProfileChange}
                     disabled={!isEditing}
-                    placeholder="Enter mobile number"
+                    placeholder={t('phonePlaceholder')}
                   />
                 </div>
 
                 <div className="profile-form-group">
-                  <label htmlFor="nidNumber">NID Number</label>
+                  <label htmlFor="nidNumber">{t('nidNumber')}</label>
                   <input
                     id="nidNumber"
                     name="nidNumber"
                     value={profile.nidNumber}
                     onChange={handleProfileChange}
                     disabled={!isEditing}
-                    placeholder="Enter NID number"
                   />
                 </div>
 
                 <div className="profile-form-group">
-                  <label htmlFor="dateOfBirth">Date of Birth</label>
+                  <label htmlFor="dateOfBirth">{t('dateOfBirth')}</label>
                   <input
                     id="dateOfBirth"
                     type="date"
@@ -326,31 +525,29 @@ function Profile() {
                 </div>
 
                 <div className="profile-form-group">
-                  <label htmlFor="fatherName">Father's Name</label>
+                  <label htmlFor="fatherName">{t('fatherName')}</label>
                   <input
                     id="fatherName"
                     name="fatherName"
                     value={profile.fatherName}
                     onChange={handleProfileChange}
                     disabled={!isEditing}
-                    placeholder="Enter father's name"
                   />
                 </div>
 
                 <div className="profile-form-group">
-                  <label htmlFor="motherName">Mother's Name</label>
+                  <label htmlFor="motherName">{t('motherName')}</label>
                   <input
                     id="motherName"
                     name="motherName"
                     value={profile.motherName}
                     onChange={handleProfileChange}
                     disabled={!isEditing}
-                    placeholder="Enter mother's name"
                   />
                 </div>
 
                 <div className="profile-form-group">
-                  <label htmlFor="gender">Gender</label>
+                  <label htmlFor="gender">{t('gender')}</label>
                   <select
                     id="gender"
                     name="gender"
@@ -358,29 +555,26 @@ function Profile() {
                     onChange={handleProfileChange}
                     disabled={!isEditing}
                   >
-                    <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
+                    <option value="">{t('selectGender')}</option>
+                    <option value="Male">{t('male')}</option>
+                    <option value="Female">{t('female')}</option>
+                    <option value="Other">{t('other')}</option>
                   </select>
                 </div>
 
                 <div className="profile-form-group">
-                  <label htmlFor="email">Email Address</label>
+                  <label htmlFor="email">{t('emailLabel')}</label>
                   <input
                     id="email"
                     type="email"
                     name="email"
                     value={profile.email}
-                    onChange={handleProfileChange}
-                    disabled={!isEditing}
-                    placeholder="Enter email address"
-                    required
+                    disabled
                   />
                 </div>
 
                 <div className="profile-form-group">
-                  <label htmlFor="maritalStatus">Marital Status</label>
+                  <label htmlFor="maritalStatus">{t('maritalStatus')}</label>
                   <select
                     id="maritalStatus"
                     name="maritalStatus"
@@ -388,47 +582,46 @@ function Profile() {
                     onChange={handleProfileChange}
                     disabled={!isEditing}
                   >
-                    <option value="">Select Marital Status</option>
-                    <option value="Single">Single</option>
-                    <option value="Married">Married</option>
-                    <option value="Divorced">Divorced</option>
-                    <option value="Widowed">Widowed</option>
+                    <option value="">{t('selectMarital')}</option>
+                    <option value="Single">{t('single')}</option>
+                    <option value="Married">{t('married')}</option>
+                    <option value="Divorced">{t('divorced')}</option>
+                    <option value="Widowed">{t('widowed')}</option>
                   </select>
                 </div>
 
                 <div className="profile-form-group">
-                  <label htmlFor="occupation">Occupation</label>
+                  <label htmlFor="occupation">{t('occupation')}</label>
                   <input
                     id="occupation"
                     name="occupation"
                     value={profile.occupation}
                     onChange={handleProfileChange}
                     disabled={!isEditing}
-                    placeholder="Enter your occupation"
                   />
                 </div>
               </div>
 
               <div className="profile-subsection">
-                <h3>Address Information</h3>
-                <p>Provide your present and permanent address.</p>
+                <h3>{t('addressInfo')}</h3>
+                <p>{t('addressInfoDesc')}</p>
               </div>
 
               {['presentAddress', 'permanentAddress'].map((type) => (
                 <div className="profile-address-card" key={type}>
                   <h3>
                     {type === 'presentAddress'
-                      ? 'Present Address'
-                      : 'Permanent Address'}
+                      ? t('presentAddress')
+                      : t('permanentAddress')}
                   </h3>
 
                   <div className="profile-form-grid">
                     {[
-                      ['division', 'Division'],
-                      ['district', 'District'],
-                      ['upazila', 'Upazila'],
-                      ['union', 'Union / Municipality'],
-                      ['village', 'Village / Road / House'],
+                      ['division', t('division')],
+                      ['district', t('district')],
+                      ['upazila', t('upazila')],
+                      ['union', t('union')],
+                      ['village', t('village')],
                     ].map(([field, label]) => (
                       <div className="profile-form-group" key={field}>
                         <label htmlFor={`${type}-${field}`}>{label}</label>
@@ -438,7 +631,6 @@ function Profile() {
                           value={profile[type][field]}
                           onChange={handleProfileChange}
                           disabled={!isEditing}
-                          placeholder={`Enter ${label.toLowerCase()}`}
                         />
                       </div>
                     ))}
@@ -448,15 +640,19 @@ function Profile() {
 
               {isEditing && (
                 <div className="profile-form-actions">
-                  <button type="submit" className="account-action-button">
-                    Save Changes
+                  <button
+                    type="submit"
+                    className="account-action-button"
+                    disabled={savingProfile}
+                  >
+                    {savingProfile ? t('savingChanges') : t('saveChanges')}
                   </button>
                   <button
                     type="button"
                     className="profile-cancel-button"
                     onClick={handleProfileCancel}
                   >
-                    Cancel
+                    {t('cancel')}
                   </button>
                 </div>
               )}
@@ -467,16 +663,16 @@ function Profile() {
       case 'Saved Services':
         return (
           <div className="account-section">
-            <h2>Saved Services</h2>
-            <p>Manage your important government services.</p>
+            <h2>{t('menuSaved')}</h2>
+            <p>{t('savedServicesDesc')}</p>
 
             {savedServices.length === 0 ? (
               <div className="account-empty-state">
                 <span>⭐</span>
-                <h3>No Saved Services Yet</h3>
-                <p>Your saved government services will appear here.</p>
+                <h3>{t('noSavedTitle')}</h3>
+                <p>{t('noSavedDesc')}</p>
                 <Link to="/" className="account-action-link">
-                  Explore Services
+                  {t('exploreServicesBtn')}
                 </Link>
               </div>
             ) : (
@@ -484,13 +680,13 @@ function Profile() {
                 {savedServices.map((item) => (
                   <div className="saved-service-item" key={item.id}>
                     <div className="saved-service-info">
-                      <h3>⭐ {item.serviceName}</h3>
-                      <p>{item.categoryName}</p>
+                      <h3>⭐ {serviceName(item.service_name)}</h3>
+                      <p>{categoryTitle(item.category_id, item.category_name)}</p>
                       <Link
-                        to={`/category/${item.categoryId}/service/${item.serviceIndex}`}
+                        to={`/category/${item.category_id}/service/${item.service_index ?? 0}`}
                         className="account-action-link"
                       >
-                        View Details
+                        {t('viewDetails').replace(' →', '')}
                       </Link>
                     </div>
 
@@ -498,7 +694,7 @@ function Profile() {
                       type="button"
                       onClick={() => handleRemoveSavedService(item.id)}
                     >
-                      Remove
+                      {t('remove')}
                     </button>
                   </div>
                 ))}
@@ -510,17 +706,14 @@ function Profile() {
       case 'My Document Checklist':
         return (
           <div className="account-section">
-            <h2>My Document Checklist</h2>
-            <p>
-              Select a government service and track your required document
-              preparation.
-            </p>
+            <h2>{t('menuChecklist')}</h2>
+            <p>{t('checklistDesc')}</p>
 
             {allServices.length > 0 ? (
               <>
                 <div className="checklist-service-selector">
                   <label htmlFor="checklist-service">
-                    Select Government Service
+                    {t('selectGovService')}
                   </label>
                   <select
                     id="checklist-service"
@@ -531,7 +724,7 @@ function Profile() {
                   >
                     {allServices.map((item) => (
                       <option key={item.id} value={item.id}>
-                        {item.categoryName} - {item.serviceName}
+                        {categoryTitle(item.categoryId, item.categoryName)} - {serviceName(item.serviceName)}
                       </option>
                     ))}
                   </select>
@@ -541,41 +734,38 @@ function Profile() {
                   <>
                     <div className="checklist-heading">
                       <div>
-                        <h3>{selectedChecklist.serviceName}</h3>
-                        <p>{selectedChecklist.categoryName}</p>
+                        <h3>{serviceName(selectedChecklist.serviceName)}</h3>
+                        <p>{categoryTitle(selectedChecklist.categoryId, selectedChecklist.categoryName)}</p>
                       </div>
                       <Link
                         to={`/category/${selectedChecklist.categoryId}/service/${selectedChecklist.serviceIndex}`}
                         className="account-action-link"
                       >
-                        View Service Details
+                        {t('viewServiceDetails')}
                       </Link>
                     </div>
 
-                    {requiredDocuments.length > 0 ? (
+                    {canonicalDocuments.length > 0 ? (
                       <>
                         <div className="checklist-progress">
                           <div className="checklist-progress-info">
-                            <span>Document Preparation Progress</span>
+                            <span>{t('docPrepProgress')}</span>
                             <strong>
-                              {completedDocuments} / {requiredDocuments.length}{' '}
-                              Completed
+                              {completedDocuments} / {canonicalDocuments.length} {t('completed')}
                             </strong>
                           </div>
                           <div
                             className="checklist-progress-track"
                             role="progressbar"
                             aria-valuemin="0"
-                            aria-valuemax={requiredDocuments.length}
+                            aria-valuemax={canonicalDocuments.length}
                             aria-valuenow={completedDocuments}
                           >
                             <div
                               className="checklist-progress-fill"
                               style={{
                                 width: `${
-                                  (completedDocuments /
-                                    requiredDocuments.length) *
-                                  100
+                                  (completedDocuments / canonicalDocuments.length) * 100
                                 }%`,
                               }}
                             />
@@ -583,71 +773,57 @@ function Profile() {
                         </div>
 
                         <div className="checklist-document-list">
-                          <h3>Required Documents</h3>
-                          {requiredDocuments.map((document) => (
+                          <h3>{t('tabDocuments')}</h3>
+                          {canonicalDocuments.map((canonicalDoc, idx) => (
                             <label
                               className="checklist-document-item"
-                              key={document}
+                              key={canonicalDoc}
                             >
                               <input
                                 type="checkbox"
                                 checked={Boolean(
-                                  checklistProgress[selectedChecklistService]?.[
-                                    document
-                                  ]
+                                  checklistProgress[selectedChecklistService]?.[canonicalDoc]
                                 )}
                                 onChange={(event) =>
-                                  handleChecklistChange(
-                                    document,
-                                    event.target.checked
-                                  )
+                                  handleChecklistChange(canonicalDoc, event.target.checked)
                                 }
                               />
-                              <span>{document}</span>
+                              <span>{displayedDocuments[idx] || canonicalDoc}</span>
                             </label>
                           ))}
                         </div>
 
-                        {completedDocuments === requiredDocuments.length && (
+                        {completedDocuments === canonicalDocuments.length && (
                           <p className="checklist-completed-message">
-                            ✓ All required documents are marked as completed!
+                            {t('allDocsCompleted')}
                           </p>
                         )}
                       </>
                     ) : (
                       <div className="account-empty-state">
                         <span>📋</span>
-                        <h3>No Checklist Available</h3>
-                        <p>
-                          Required document information is not available for
-                          this service yet.
-                        </p>
+                        <h3>{t('noChecklistTitle')}</h3>
+                        <p>{t('noChecklistDesc')}</p>
                       </div>
                     )}
                   </>
                 )}
               </>
-            ) : (
-              <div className="account-empty-state">
-                <span>📋</span>
-                <h3>No Services Available</h3>
-                <p>There are no services to show in the checklist yet.</p>
-              </div>
-            )}
+            ) : null}
           </div>
         );
 
       case 'My Downloads':
         return (
           <div className="account-section">
-            <h2>My Downloads</h2>
-            <p>Access your downloaded documents and files.</p>
+            <h2>{t('menuDownloads')}</h2>
+            <p>{t('downloadsDesc')}</p>
 
             {downloadHistory.length === 0 ? (
               <div className="account-empty-state">
                 <span>📁</span>
-                <h3>No Downloads Yet</h3>
-                <p>Your downloaded documents will appear here.</p>
+                <h3>{t('noDownloadsTitle')}</h3>
+                <p>{t('noDownloadsDesc')}</p>
               </div>
             ) : (
               <div className="downloads-list">
@@ -655,11 +831,114 @@ function Profile() {
                   <div className="download-item" key={item.id}>
                     <div>
                       <h4>📄 {item.name}</h4>
-                      <p>Downloaded: {item.date}</p>
+                      <p>{t('downloadedOn')} {item.date}</p>
                     </div>
-                    <a href={item.url} download={item.name}>
-                      Download Again
-                    </a>
+                    {item.docId && (
+                      <button
+                        type="button"
+                        className="settings-link"
+                        onClick={() => handleDownloadAgain(item)}
+                      >
+                        {t('downloadAgain')}
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+
+      case 'Feedback & Reports':
+        return (
+          <div className="account-section">
+            <h2>{t('feedbackTitle')}</h2>
+            <p>{t('feedbackSubtitle')}</p>
+
+            <form className="account-form mb-4" onSubmit={handleFeedbackSubmit}>
+              <div className="profile-form-group">
+                <label htmlFor="fb-type">{t('feedbackType')}</label>
+                <select
+                  id="fb-type"
+                  value={feedbackForm.feedback_type}
+                  onChange={(e) =>
+                    setFeedbackForm((prev) => ({ ...prev, feedback_type: e.target.value }))
+                  }
+                >
+                  <option value="Suggestion">{t('feedbackTypeSuggestion')}</option>
+                  <option value="Bug Report">{t('feedbackTypeBug')}</option>
+                  <option value="Service Info Correction">{t('feedbackTypeCorrection')}</option>
+                  <option value="General Inquiry">{t('feedbackTypeInquiry')}</option>
+                </select>
+              </div>
+
+              <div className="profile-form-group">
+                <label htmlFor="fb-subject">{t('feedbackSubject')}</label>
+                <input
+                  id="fb-subject"
+                  type="text"
+                  value={feedbackForm.subject}
+                  onChange={(e) =>
+                    setFeedbackForm((prev) => ({ ...prev, subject: e.target.value }))
+                  }
+                  required
+                />
+              </div>
+
+              <div className="profile-form-group">
+                <label htmlFor="fb-message">{t('feedbackMessage')}</label>
+                <textarea
+                  id="fb-message"
+                  rows={4}
+                  value={feedbackForm.message}
+                  onChange={(e) =>
+                    setFeedbackForm((prev) => ({ ...prev, message: e.target.value }))
+                  }
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="account-action-button"
+                disabled={submittingFeedback}
+              >
+                {submittingFeedback ? t('submittingFeedback') : t('submitFeedback')}
+              </button>
+            </form>
+
+            <div className="profile-subsection">
+              <h3>{t('myFeedbackHistory')}</h3>
+            </div>
+
+            {feedbacks.length === 0 ? (
+              <p className="text-muted">{t('noFeedbackYet')}</p>
+            ) : (
+              <div className="saved-services-list">
+                {feedbacks.map((fb) => (
+                  <div className="saved-service-item" key={fb.id}>
+                    <div className="saved-service-info">
+                      <h3>
+                        {fb.subject}{' '}
+                        <span className="badge bg-secondary ms-2" style={{ fontSize: '11px' }}>
+                          {feedbackStatusLabel(fb.status)}
+                        </span>
+                      </h3>
+                      <p>
+                        {feedbackTypeLabel(fb.feedback_type)} • {fb.message}
+                      </p>
+                      {fb.admin_response && (
+                        <p className="text-primary mb-0">
+                          <strong>{t('adminReply')}</strong> {fb.admin_response}
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteFeedback(fb.id)}
+                    >
+                      {t('delete')}
+                    </button>
                   </div>
                 ))}
               </div>
@@ -670,33 +949,33 @@ function Profile() {
       case 'Account Settings':
         return (
           <div className="account-section">
-            <h2>Account Settings</h2>
-            <p>Manage your account preferences and security settings.</p>
+            <h2>{t('menuSettings')}</h2>
+            <p>{t('settingsDesc')}</p>
 
             <div className="settings-item">
               <div>
-                <h3>Account Information</h3>
-                <p>Manage your personal account information.</p>
+                <h3>{t('accountInfo')}</h3>
+                <p>{t('accountInfoDesc')}</p>
               </div>
               <button
                 type="button"
                 className="settings-link"
                 onClick={() => setActiveSection('Personal Information')}
               >
-                Manage
+                {t('manage')}
               </button>
             </div>
 
             <div className="settings-item">
               <div>
-                <h3>Change Password</h3>
-                <p>Update your account password for better security.</p>
+                <h3>{t('changePassword')}</h3>
+                <p>{t('changePasswordDesc')}</p>
               </div>
             </div>
 
             <form className="account-form password-form" onSubmit={handlePasswordSubmit}>
               <div className="account-form-group">
-                <label htmlFor="currentPassword">Current Password</label>
+                <label htmlFor="currentPassword">{t('currentPassword')}</label>
                 <input
                   id="currentPassword"
                   type="password"
@@ -707,13 +986,13 @@ function Profile() {
                       currentPassword: event.target.value,
                     }))
                   }
-                  placeholder="Enter current password"
+                  placeholder={t('currentPassword')}
                   required
                 />
               </div>
 
               <div className="account-form-group">
-                <label htmlFor="newPassword">New Password</label>
+                <label htmlFor="newPassword">{t('newPassword')}</label>
                 <input
                   id="newPassword"
                   type="password"
@@ -724,14 +1003,14 @@ function Profile() {
                       newPassword: event.target.value,
                     }))
                   }
-                  placeholder="Enter new password"
-                  minLength={6}
+                  placeholder={t('newPassword')}
+                  minLength={8}
                   required
                 />
               </div>
 
               <div className="account-form-group">
-                <label htmlFor="confirmPassword">Confirm New Password</label>
+                <label htmlFor="confirmPassword">{t('confirmNewPassword')}</label>
                 <input
                   id="confirmPassword"
                   type="password"
@@ -742,14 +1021,18 @@ function Profile() {
                       confirmPassword: event.target.value,
                     }))
                   }
-                  placeholder="Confirm new password"
-                  minLength={6}
+                  placeholder={t('confirmNewPassword')}
+                  minLength={8}
                   required
                 />
               </div>
 
-              <button type="submit" className="account-action-button">
-                Update Password
+              <button
+                type="submit"
+                className="account-action-button"
+                disabled={updatingPassword}
+              >
+                {updatingPassword ? t('updatingPassword') : t('updatePassword')}
               </button>
             </form>
           </div>
@@ -763,13 +1046,13 @@ function Profile() {
   return (
     <div className="account-container">
       <aside className="account-sidebar">
-        <h2>My Account</h2>
+        <h2>{t('myAccount')}</h2>
 
         <div className="account-user">
           <div className="account-avatar">👤</div>
           <div>
-            <h4>{profile.fullName || 'Welcome User'}</h4>
-            <p>My Account</p>
+            <h4>{profile.fullName || t('welcomeUser')}</h4>
+            <p>{t('myAccount')}</p>
           </div>
         </div>
 
@@ -777,31 +1060,49 @@ function Profile() {
           {menuItems.map((item) => (
             <button
               type="button"
-              key={item.name}
+              key={item.key}
               className={`account-menu-item ${
-                activeSection === item.name ? 'active' : ''
+                activeSection === item.key ? 'active' : ''
               }`}
               onClick={() => {
-                setActiveSection(item.name);
+                setStatusNotice(null);
+                setActiveSection(item.key);
                 setIsEditing(false);
               }}
             >
               <span>{item.icon}</span>
-              {item.name}
+              {item.label}
             </button>
           ))}
         </nav>
 
-        <Link to="/login" className="account-logout">
-          <span>↪</span> Logout
-        </Link>
+        <button
+          type="button"
+          className="account-logout"
+          style={{ border: 'none', background: 'transparent', width: '100%', textAlign: 'left', cursor: 'pointer' }}
+          onClick={handleLogout}
+        >
+          <span>↪</span> {t('navLogout')}
+        </button>
       </aside>
 
       <main className="account-main">
         <div className="account-topbar">
-          <h2>{activeSection}</h2>
-          <span>My Account</span>
+          <h2>{activeMenuItem?.label || activeSection}</h2>
+          <span>{t('myAccount')}</span>
         </div>
+
+        {statusNotice && (
+          <div
+            className={`alert alert-${statusNotice.type === 'danger' ? 'danger' : 'success'} py-2 px-3 mb-3`}
+            role="alert"
+          >
+            {statusNotice.key
+              ? t(statusNotice.key)
+              : translateMessage(statusNotice.raw, statusNotice.fallbackKey)}
+          </div>
+        )}
+
         {renderContent()}
       </main>
     </div>

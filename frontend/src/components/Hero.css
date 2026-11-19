@@ -12,7 +12,7 @@
       rgba(8, 35, 65, 0.65),
       rgba(8, 35, 65, 0.72)
     ),
-    url('C:\Users\Admin\Desktop\capstone\GovService-BD\frontend\public\images\image.png');
+    url('/images/image.png');
 
   background-size: cover;
   background-position: center;

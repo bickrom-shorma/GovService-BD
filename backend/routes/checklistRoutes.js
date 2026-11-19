@@ -1,4 +1,3 @@
-
 const express = require('express');
 const db = require('../config/db');
 const verifyToken = require('../middleware/authMiddleware');
@@ -25,15 +24,45 @@ router.get('/', verifyToken, async (req, res) => {
 
     const [checklists] = await db.query(sql, values);
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Document checklist retrieved successfully!',
       checklists
     });
-
   } catch (error) {
     console.error('Get checklist error:', error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error while retrieving checklist.'
+    });
+  }
+});
+
+// PUT: Upsert / Toggle a checklist item by service_key + document_name
+router.put('/toggle', verifyToken, async (req, res) => {
+  try {
+    const { service_key, document_name, is_completed } = req.body;
+
+    if (!service_key || !document_name || typeof is_completed !== 'boolean') {
+      return res.status(400).json({
+        message: 'Service key, document name, and boolean completion status are required.'
+      });
+    }
+
+    const [result] = await db.query(
+      `INSERT INTO document_checklists (user_id, service_key, document_name, is_completed)
+       VALUES (?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE is_completed = VALUES(is_completed)`,
+      [req.user.id, service_key, document_name, is_completed ? 1 : 0]
+    );
+
+    return res.status(200).json({
+      message: 'Checklist item updated successfully!',
+      checklistId: result.insertId,
+      is_completed: Boolean(is_completed)
+    });
+  } catch (error) {
+    console.error('Toggle checklist error:', error.message);
+    return res.status(500).json({
+      message: 'Server error while updating checklist.'
     });
   }
 });
@@ -68,14 +97,13 @@ router.post('/', verifyToken, async (req, res) => {
       [req.user.id, service_key, document_name]
     );
 
-    res.status(201).json({
+    return res.status(201).json({
       message: 'Document added to checklist successfully!',
       checklistId: result.insertId
     });
-
   } catch (error) {
     console.error('Add checklist error:', error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error while adding document.'
     });
   }
@@ -110,13 +138,12 @@ router.patch('/:id', verifyToken, async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Checklist status updated successfully!'
     });
-
   } catch (error) {
     console.error('Update checklist error:', error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error while updating checklist.'
     });
   }
@@ -139,13 +166,12 @@ router.delete('/:id', verifyToken, async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Checklist item deleted successfully!'
     });
-
   } catch (error) {
     console.error('Delete checklist error:', error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error while deleting checklist item.'
     });
   }

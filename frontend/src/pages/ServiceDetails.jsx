@@ -1,52 +1,149 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
 import servicesData from '../data/services';
 import serviceDetailsData from '../data/serviceDetailsData';
+import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
+import { apiRequest } from '../utils/api';
 
 import './ServiceDetails.css';
 
 function ServiceDetails() {
   const { categoryId, serviceIndex } = useParams();
-
-  const category = servicesData[categoryId];
-  const service = category?.services?.[Number(serviceIndex)];
-
-  const [activeTab, setActiveTab] = useState('overview');
-  const [isSaved, setIsSaved] = useState(false);
-
   const serviceKey = `${categoryId}-${serviceIndex}`;
+  return (
+    <ServiceDetailsContent
+      key={serviceKey}
+      categoryId={categoryId}
+      serviceIndex={serviceIndex}
+      serviceKey={serviceKey}
+    />
+  );
+}
+
+function ServiceDetailsContent({ categoryId, serviceIndex, serviceKey }) {
+  const { t, categoryTitle, serviceName, getServiceDetails, translateMessage } = useLanguage();
+  const { isAuthenticated, loading: authLoading } = useAuth();
+
+  const staticCategory = servicesData[categoryId];
+  const staticService = staticCategory?.services?.[Number(serviceIndex)];
+  const staticDetails = serviceDetailsData[serviceKey];
+
+  const [serviceData, setServiceData] = useState(() =>
+    staticService
+      ? {
+          id: serviceKey,
+          categoryId,
+          categoryName: staticCategory.title,
+          serviceName: staticService,
+          ...(staticDetails || {}),
+        }
+      : null
+  );
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [isSaved, setIsSaved] = useState(() => {
+    if (isAuthenticated) return false;
+    try {
+      const savedServices = JSON.parse(
+        localStorage.getItem('savedServices') || '[]'
+      );
+      return savedServices.some((item) => item.id === serviceKey);
+    } catch {
+      return false;
+    }
+  });
+  const [saving, setSaving] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
 
   useEffect(() => {
-    const savedServices = JSON.parse(
-      localStorage.getItem('savedServices') || '[]'
-    );
+    let active = true;
 
-    setIsSaved(savedServices.some((item) => item.id === serviceKey));
+    apiRequest(`/api/services/${serviceKey}`)
+      .then((res) => {
+        if (active && res?.success && res.data) {
+          setServiceData(res.data);
+        }
+      })
+      .catch(() => {
+        // Fallback to static service data
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, [serviceKey]);
 
-  if (!service) {
-    return <h2 className="text-center mt-5">Service not found!</h2>;
+  useEffect(() => {
+    if (authLoading || !isAuthenticated) return;
+    let active = true;
+
+    apiRequest('/api/saved-services')
+      .then((res) => {
+        if (!active) return;
+        const list = res?.services || [];
+        setIsSaved(list.some((item) => item.service_key === serviceKey));
+      })
+      .catch(() => {});
+
+    return () => {
+      active = false;
+    };
+  }, [serviceKey, authLoading, isAuthenticated]);
+
+  if (!loading && !serviceData) {
+    return <h2 className="text-center mt-5">{t('serviceNotFound')}</h2>;
   }
 
-  const details = serviceDetailsData[serviceKey];
+  if (!serviceData) {
+    return <p className="text-center mt-5">{t('loading')}</p>;
+  }
 
-  const handleSaveService = () => {
+  const handleSaveService = async () => {
+    setSaving(true);
+    setStatusMessage('');
+
+    if (isAuthenticated) {
+      try {
+        if (isSaved) {
+          await apiRequest(`/api/saved-services/by-key/${serviceKey}`, {
+            method: 'DELETE',
+          });
+          setIsSaved(false);
+        } else {
+          await apiRequest('/api/saved-services', {
+            method: 'POST',
+            body: JSON.stringify({
+              service_key: serviceKey,
+              category_id: categoryId,
+              service_index: Number(serviceIndex),
+              service_name: serviceData.serviceName,
+              category_name: serviceData.categoryName,
+            }),
+          });
+          setIsSaved(true);
+        }
+        window.dispatchEvent(new Event('savedServicesUpdated'));
+      } catch (err) {
+        setStatusMessage(translateMessage(err.message, 'savedServiceError'));
+      } finally {
+        setSaving(false);
+      }
+      return;
+    }
+
     const savedServices = JSON.parse(
       localStorage.getItem('savedServices') || '[]'
     );
-
-    const alreadySaved = savedServices.some(
-      (item) => item.id === serviceKey
-    );
+    const alreadySaved = savedServices.some((item) => item.id === serviceKey);
 
     let updatedServices;
-
     if (alreadySaved) {
-      updatedServices = savedServices.filter(
-        (item) => item.id !== serviceKey
-      );
+      updatedServices = savedServices.filter((item) => item.id !== serviceKey);
       setIsSaved(false);
     } else {
       updatedServices = [
@@ -55,26 +152,33 @@ function ServiceDetails() {
           id: serviceKey,
           categoryId,
           serviceIndex: Number(serviceIndex),
-          serviceName: service,
-          categoryName: category.title,
+          serviceName: serviceData.serviceName,
+          categoryName: serviceData.categoryName,
         },
       ];
       setIsSaved(true);
     }
 
     localStorage.setItem('savedServices', JSON.stringify(updatedServices));
-
     window.dispatchEvent(new Event('savedServicesUpdated'));
+    setSaving(false);
   };
 
+  const localizedDetails = getServiceDetails(serviceKey, serviceData);
+  const displayData = localizedDetails || serviceData;
+
+  const hasDetails = Boolean(
+    displayData.overview ||
+      displayData.requiredDocuments?.length ||
+      displayData.officialLink
+  );
+
   const renderContent = () => {
-    if (!details) {
+    if (!hasDetails) {
       return (
         <>
-          <h3>Information Coming Soon</h3>
-          <p>
-            Verified information for this service will be added soon.
-          </p>
+          <h3>{t('infoComingSoon')}</h3>
+          <p>{t('infoComingSoonDesc')}</p>
         </>
       );
     }
@@ -83,19 +187,19 @@ function ServiceDetails() {
       case 'overview':
         return (
           <>
-            <h3>Overview</h3>
-            <p>{details.overview}</p>
+            <h3>{t('tabOverview')}</h3>
+            <p>{displayData.overview}</p>
           </>
         );
 
       case 'documents':
         return (
           <>
-            <h3>Required Documents</h3>
-            <p>Please prepare the following documents:</p>
+            <h3>{t('tabDocuments')}</h3>
+            <p>{t('prepareDocsPrompt')}</p>
 
             <ul className="service-information-list">
-              {details.requiredDocuments.map((document, index) => (
+              {(displayData.requiredDocuments || []).map((document, index) => (
                 <li key={index}>{document}</li>
               ))}
             </ul>
@@ -105,27 +209,25 @@ function ServiceDetails() {
       case 'guidelines':
         return (
           <>
-            <h3>Application Guidelines</h3>
+            <h3>{t('tabGuidelines')}</h3>
 
             <div className="application-guideline-section">
-              <h4>Online Application Process</h4>
-              <p>Follow these steps to apply online:</p>
+              <h4>{t('onlineProcess')}</h4>
+              <p>{t('onlineProcessPrompt')}</p>
 
               <ol className="service-information-list">
-                {details.applicationSteps.online.map((step, index) => (
+                {(displayData.applicationSteps?.online || []).map((step, index) => (
                   <li key={index}>{step}</li>
                 ))}
               </ol>
             </div>
 
             <div className="application-guideline-section">
-              <h4>Offline Application Process</h4>
-              <p>
-                Follow these steps to apply directly through a government office:
-              </p>
+              <h4>{t('offlineProcess')}</h4>
+              <p>{t('offlineProcessPrompt')}</p>
 
               <ol className="service-information-list">
-                {details.applicationSteps.offline.map((step, index) => (
+                {(displayData.applicationSteps?.offline || []).map((step, index) => (
                   <li key={index}>{step}</li>
                 ))}
               </ol>
@@ -136,27 +238,29 @@ function ServiceDetails() {
       case 'official':
         return (
           <>
-            <h3>Official Application Form</h3>
-            <p>
-              Apply through the official government portal.
-            </p>
+            <h3>{t('officialFormTitle')}</h3>
+            <p>{t('officialFormPrompt')}</p>
 
-            <a
-              href={details.officialLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="official-link-button"
-            >
-              Visit Official Application Portal ↗
-            </a>
+            {displayData.officialLink ? (
+              <a
+                href={displayData.officialLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="official-link-button"
+              >
+                {t('visitOfficialPortal')}
+              </a>
+            ) : (
+              <p>{t('toBeVerified')}</p>
+            )}
           </>
         );
 
       case 'offices':
         return (
           <>
-            <h3>Government Office Information</h3>
-            <p>{details.officeInformation}</p>
+            <h3>{t('officeInfoTitle')}</h3>
+            <p>{displayData.officeInformation || t('toBeVerified')}</p>
           </>
         );
 
@@ -169,16 +273,16 @@ function ServiceDetails() {
     <div className="service-details-container">
 
       <Link to={`/category/${categoryId}`} className="back-link">
-        ← Back to Services
+        {t('backToServices')}
       </Link>
 
       <div className="service-details-heading">
         <div className="service-heading-icon">📄</div>
 
         <div>
-          <h2>{service}</h2>
+          <h2>{serviceName(serviceData.serviceName)}</h2>
           <p>
-            Get information and guidance for this government service.
+            {categoryTitle(categoryId, serviceData.categoryName)} — {t('serviceSubtitle')}
           </p>
         </div>
       </div>
@@ -187,33 +291,42 @@ function ServiceDetails() {
         type="button"
         className={`save-service-button ${isSaved ? 'saved' : ''}`}
         onClick={handleSaveService}
+        disabled={saving}
       >
-        {isSaved ? '★ Saved' : '☆ Save Service'}
+        {saving ? t('saving') : isSaved ? t('savedService') : t('saveService')}
       </button>
+
+      {statusMessage && (
+        <div className="alert alert-warning py-2 px-3 mb-3">{statusMessage}</div>
+      )}
+
+      <div className="alert alert-info py-2 px-3 mb-3" style={{ fontSize: '13px' }}>
+        {t('officialVerifyNotice')}
+      </div>
 
       <div className="service-info-cards">
 
         <div className="info-card">
           <span>💰</span>
           <div>
-            <small>Estimated Cost</small>
-            <h4>{details?.estimatedCost || 'To be verified'}</h4>
+            <small>{t('estimatedCost')}</small>
+            <h4>{displayData.estimatedCost || t('toBeVerified')}</h4>
           </div>
         </div>
 
         <div className="info-card">
           <span>◷</span>
           <div>
-            <small>Processing Time</small>
-            <h4>{details?.processingTime || 'To be verified'}</h4>
+            <small>{t('processingTime')}</small>
+            <h4>{displayData.processingTime || t('toBeVerified')}</h4>
           </div>
         </div>
 
         <div className="info-card">
           <span>🏢</span>
           <div>
-            <small>Relevant Office</small>
-            <h4>{details?.relevantOffice || 'To be verified'}</h4>
+            <small>{t('relevantOffice')}</small>
+            <h4>{displayData.relevantOffice || t('toBeVerified')}</h4>
           </div>
         </div>
 
@@ -224,11 +337,11 @@ function ServiceDetails() {
         <aside className="details-sidebar">
 
           {[
-            { id: 'overview', icon: '◉', label: 'Overview' },
-            { id: 'documents', icon: '▣', label: 'Required Documents' },
-            { id: 'guidelines', icon: '☷', label: 'Application Guidelines' },
-            { id: 'official', icon: '↗', label: 'Official Form Link' },
-            { id: 'offices', icon: '⌖', label: 'Nearby Offices' },
+            { id: 'overview', icon: '◉', label: t('tabOverview') },
+            { id: 'documents', icon: '▣', label: t('tabDocuments') },
+            { id: 'guidelines', icon: '☷', label: t('tabGuidelines') },
+            { id: 'official', icon: '↗', label: t('tabOfficial') },
+            { id: 'offices', icon: '⌖', label: t('tabOffices') },
           ].map((item) => (
             <button
               key={item.id}

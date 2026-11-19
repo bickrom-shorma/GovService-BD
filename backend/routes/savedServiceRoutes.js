@@ -1,4 +1,3 @@
-
 const express = require('express');
 const db = require('../config/db');
 const verifyToken = require('../middleware/authMiddleware');
@@ -47,14 +46,13 @@ router.post('/', verifyToken, async (req, res) => {
       ]
     );
 
-    res.status(201).json({
+    return res.status(201).json({
       message: 'Service saved successfully!',
       savedServiceId: result.insertId
     });
-
   } catch (error) {
     console.error('Save service error:', error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error while saving service.'
     });
   }
@@ -68,19 +66,45 @@ router.get('/', verifyToken, async (req, res) => {
       [req.user.id]
     );
 
-    res.status(200).json({
+    return res.status(200).json({
       services
     });
-
   } catch (error) {
     console.error('Get saved services error:', error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error while fetching saved services.'
     });
   }
 });
 
-// Remove a Saved Service
+// Remove a Saved Service by service_key
+router.delete('/by-key/:serviceKey', verifyToken, async (req, res) => {
+  try {
+    const { serviceKey } = req.params;
+
+    const [result] = await db.query(
+      'DELETE FROM saved_services WHERE service_key = ? AND user_id = ?',
+      [serviceKey, req.user.id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        message: 'Saved service not found.'
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Saved service removed successfully!'
+    });
+  } catch (error) {
+    console.error('Remove saved service by key error:', error.message);
+    return res.status(500).json({
+      message: 'Server error while removing saved service.'
+    });
+  }
+});
+
+// Remove a Saved Service by ID
 router.delete('/:id', verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -96,13 +120,12 @@ router.delete('/:id', verifyToken, async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Saved service removed successfully!'
     });
-
   } catch (error) {
     console.error('Remove saved service error:', error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error while removing saved service.'
     });
   }

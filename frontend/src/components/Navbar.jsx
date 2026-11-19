@@ -1,13 +1,32 @@
-
 import { useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 import './Navbar.css';
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [language, setLanguage] = useState('English');
+  const { language, setLanguage, t } = useLanguage();
+  const { isAuthenticated, isAdmin, user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const closeMenu = () => setMenuOpen(false);
+
+  const handleServicesClick = () => {
+    closeMenu();
+    setTimeout(() => {
+      const el = document.getElementById('categories');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 50);
+  };
+
+  const handleLogout = () => {
+    closeMenu();
+    logout();
+    navigate('/login');
+  };
 
   return (
     <nav className="main-navbar">
@@ -17,7 +36,7 @@ function Navbar() {
         <Link to="/" className="navbar-brand" onClick={closeMenu}>
           <span className="brand-icon">🏛️</span>
           <span className="brand-text">
-            GovService <span>BD</span>
+            {t('brandMain')} <span>{t('brandSub')}</span>
           </span>
         </Link>
 
@@ -26,7 +45,7 @@ function Navbar() {
           className={`navbar-toggle ${menuOpen ? 'open' : ''}`}
           type="button"
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle navigation"
+          aria-label={t('toggleNavLabel')}
           aria-expanded={menuOpen}
         >
           {menuOpen ? '✕' : '☰'}
@@ -37,7 +56,6 @@ function Navbar() {
 
           <div className="navbar-links">
 
-            {/* Home */}
             <NavLink
               to="/"
               end
@@ -46,20 +64,18 @@ function Navbar() {
               }
               onClick={closeMenu}
             >
-              Home
+              {t('navHome')}
             </NavLink>
 
-            {/* Services */}
             <NavLink
               to="/"
               end
               className="navbar-link"
-              onClick={closeMenu}
+              onClick={handleServicesClick}
             >
-              Services
+              {t('navServices')}
             </NavLink>
 
-            {/* AI Assistant */}
             <NavLink
               to="/ai-assistant"
               className={({ isActive }) =>
@@ -67,10 +83,9 @@ function Navbar() {
               }
               onClick={closeMenu}
             >
-              AI Assistant
+              {t('navAi')}
             </NavLink>
 
-            {/* My Documents */}
             <NavLink
               to="/my-documents"
               className={({ isActive }) =>
@@ -78,8 +93,32 @@ function Navbar() {
               }
               onClick={closeMenu}
             >
-              My Documents
+              {t('navDocs')}
             </NavLink>
+
+            {isAuthenticated && (
+              <NavLink
+                to="/profile"
+                className={({ isActive }) =>
+                  `navbar-link ${isActive ? 'active' : ''}`
+                }
+                onClick={closeMenu}
+              >
+                {t('navProfile')}
+              </NavLink>
+            )}
+
+            {isAdmin && (
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  `navbar-link ${isActive ? 'active' : ''}`
+                }
+                onClick={closeMenu}
+              >
+                {t('navAdmin')}
+              </NavLink>
+            )}
 
           </div>
 
@@ -93,29 +132,49 @@ function Navbar() {
                 className="language-select"
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                aria-label="Select language"
+                aria-label={t('selectLangLabel')}
               >
-                <option value="English">English</option>
-                <option value="বাংলা">বাংলা</option>
+                <option value="en">English</option>
+                <option value="bn">বাংলা</option>
               </select>
             </div>
 
-            {/* Authentication Buttons */}
-            <Link
-              to="/login"
-              className="login-button"
-              onClick={closeMenu}
-            >
-              Login
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/profile"
+                  className="login-button"
+                  onClick={closeMenu}
+                >
+                  {user?.full_name?.split(' ')[0] || t('navProfile')}
+                </Link>
+                <button
+                  type="button"
+                  className="register-button"
+                  onClick={handleLogout}
+                >
+                  {t('navLogout')}
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="login-button"
+                  onClick={closeMenu}
+                >
+                  {t('navLogin')}
+                </Link>
 
-            <Link
-              to="/register"
-              className="register-button"
-              onClick={closeMenu}
-            >
-              Register
-            </Link>
+                <Link
+                  to="/register"
+                  className="register-button"
+                  onClick={closeMenu}
+                >
+                  {t('navRegister')}
+                </Link>
+              </>
+            )}
 
           </div>
         </div>

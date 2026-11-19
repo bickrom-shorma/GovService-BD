@@ -1,4 +1,3 @@
-
 const express = require('express');
 const db = require('../config/db');
 const verifyToken = require('../middleware/authMiddleware');
@@ -8,7 +7,9 @@ const router = express.Router();
 // POST: Submit Feedback or Report
 router.post('/', verifyToken, async (req, res) => {
   try {
-    const { feedback_type, subject, message } = req.body;
+    const feedback_type = String(req.body.feedback_type || '').trim();
+    const subject = String(req.body.subject || '').trim();
+    const message = String(req.body.message || '').trim();
 
     if (!feedback_type || !subject || !message) {
       return res.status(400).json({
@@ -23,20 +24,19 @@ router.post('/', verifyToken, async (req, res) => {
       [req.user.id, feedback_type, subject, message]
     );
 
-    res.status(201).json({
+    return res.status(201).json({
       message: 'Feedback submitted successfully!',
       feedbackId: result.insertId
     });
-
   } catch (error) {
     console.error('Submit feedback error:', error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error while submitting feedback.'
     });
   }
 });
 
-// GET: Retrieve user's Feedback and Reports
+// GET: Retrieve logged-in user's Feedback and Reports
 router.get('/', verifyToken, async (req, res) => {
   try {
     const [feedbacks] = await db.query(
@@ -46,14 +46,13 @@ router.get('/', verifyToken, async (req, res) => {
       [req.user.id]
     );
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Feedback and reports retrieved successfully!',
       feedbacks
     });
-
   } catch (error) {
     console.error('Get feedback error:', error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error while retrieving feedback.'
     });
   }
@@ -76,13 +75,12 @@ router.delete('/:id', verifyToken, async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Feedback or report deleted successfully!'
     });
-
   } catch (error) {
     console.error('Delete feedback error:', error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error while deleting feedback.'
     });
   }

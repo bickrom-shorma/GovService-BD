@@ -1,0 +1,8 @@
+{
+  "name": "GovService BD",
+  "description": "Bangladesh Government Services Portal with document management, checklists, Bengali/English support, admin management, and Gemini AI guidance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
