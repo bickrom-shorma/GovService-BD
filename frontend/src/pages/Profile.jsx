@@ -118,56 +118,63 @@ function Profile() {
 
   useEffect(() => {
     let active = true;
-    Promise.all([
+    Promise.allSettled([
       apiRequest('/api/users/profile'),
       apiRequest('/api/saved-services'),
       apiRequest('/api/checklists'),
       apiRequest('/api/feedback'),
     ])
-      .then(([profileRes, savedRes, checklistRes, feedbackRes]) => {
+      .then(([profileSettled, savedSettled, checklistSettled, feedbackSettled]) => {
         if (!active) return;
 
-        if (profileRes?.profile) {
+        if (profileSettled.status === 'fulfilled' && profileSettled.value?.profile) {
+          const loaded = profileSettled.value.profile;
           const merged = {
             ...initialProfile,
-            ...profileRes.profile,
+            ...loaded,
             presentAddress: {
               ...initialProfile.presentAddress,
-              ...(profileRes.profile.presentAddress || {}),
+              ...(loaded.presentAddress || {}),
             },
             permanentAddress: {
               ...initialProfile.permanentAddress,
-              ...(profileRes.profile.permanentAddress || {}),
+              ...(loaded.permanentAddress || {}),
             },
           };
           setProfile(merged);
           setSavedSnapshot(merged);
+        } else if (profileSettled.status === 'rejected') {
+          setStatusNotice({
+            type: 'danger',
+            raw: profileSettled.reason?.message,
+            fallbackKey: 'profileLoadError',
+          });
         }
 
-        if (Array.isArray(savedRes?.services)) {
-          setSavedServices(savedRes.services);
+        if (
+          savedSettled.status === 'fulfilled' &&
+          Array.isArray(savedSettled.value?.services)
+        ) {
+          setSavedServices(savedSettled.value.services);
         }
 
-        if (Array.isArray(checklistRes?.checklists)) {
+        if (
+          checklistSettled.status === 'fulfilled' &&
+          Array.isArray(checklistSettled.value?.checklists)
+        ) {
           const mapped = {};
-          checklistRes.checklists.forEach((row) => {
+          checklistSettled.value.checklists.forEach((row) => {
             if (!mapped[row.service_key]) mapped[row.service_key] = {};
             mapped[row.service_key][row.document_name] = Boolean(row.is_completed);
           });
           setChecklistProgress(mapped);
         }
 
-        if (Array.isArray(feedbackRes?.feedbacks)) {
-          setFeedbacks(feedbackRes.feedbacks);
-        }
-      })
-      .catch((err) => {
-        if (active) {
-          setStatusNotice({
-            type: 'danger',
-            raw: err.message,
-            fallbackKey: 'profileLoadError',
-          });
+        if (
+          feedbackSettled.status === 'fulfilled' &&
+          Array.isArray(feedbackSettled.value?.feedbacks)
+        ) {
+          setFeedbacks(feedbackSettled.value.feedbacks);
         }
       })
       .finally(() => {

@@ -22,13 +22,81 @@ function parseAddress(raw) {
   }
 }
 
+function formatDateOnly(val) {
+  if (!val) return '';
+  if (val instanceof Date && !Number.isNaN(val.getTime())) {
+    const y = val.getFullYear();
+    const m = String(val.getMonth() + 1).padStart(2, '0');
+    const d = String(val.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+  const str = String(val).trim();
+  const match = str.match(/^(\d{4}-\d{2}-\d{2})/);
+  return match ? match[1] : str.slice(0, 10);
+}
+
+let userProfilesTableReady = false;
+async function ensureUserProfilesTable() {
+  if (userProfilesTableReady || db.isMockMode()) {
+    userProfilesTableReady = true;
+    return true;
+  }
+  try {
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS user_profiles (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL UNIQUE,
+        nid_number VARCHAR(50) NULL,
+        date_of_birth DATE NULL,
+        father_name VARCHAR(150) NULL,
+        mother_name VARCHAR(150) NULL,
+        gender VARCHAR(30) NULL,
+        marital_status VARCHAR(30) NULL,
+        occupation VARCHAR(100) NULL,
+        present_address JSON NULL,
+        permanent_address JSON NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT fk_user_profiles_user
+          FOREIGN KEY (user_id) REFERENCES users(id)
+          ON DELETE CASCADE
+      ) ENGINE=InnoDB
+    `);
+    userProfilesTableReady = true;
+    return true;
+  } catch (err) {
+    console.warn('Could not ensure user_profiles table:', err.message);
+    return false;
+  }
+}
+
+async function fetchExtendedProfile(userId) {
+  try {
+    const [profiles] = await db.query(
+      'SELECT * FROM user_profiles WHERE user_id = ?',
+      [userId]
+    );
+    return profiles[0] || {};
+  } catch (err) {
+    if (err && err.code === 'ER_NO_SUCH_TABLE') {
+      const created = await ensureUserProfilesTable();
+      if (created) {
+        const [profiles] = await db.query(
+          'SELECT * FROM user_profiles WHERE user_id = ?',
+          [userId]
+        );
+        return profiles[0] || {};
+      }
+      return {};
+    }
+    throw err;
+  }
+}
+
 // Get Logged-in User Profile
 router.get('/profile', verifyToken, async (req, res) => {
   try {
     const [users] = await db.query(
-      `SELECT id, full_name, email, phone, role, created_at
-       FROM users
-       WHERE id = ?`,
+      'SELECT * FROM users WHERE id = ?',
       [req.user.id]
     );
 
@@ -38,13 +106,8 @@ router.get('/profile', verifyToken, async (req, res) => {
       });
     }
 
-    const [profiles] = await db.query(
-      'SELECT * FROM user_profiles WHERE user_id = ?',
-      [req.user.id]
-    );
-
-    const base = users[0];
-    const ext = profiles[0] || {};
+    const { password_hash: _passwordHash, ...base } = users[0];
+    const ext = await fetchExtendedProfile(req.user.id);
 
     return res.status(200).json({
       message: 'Profile retrieved successfully!',
@@ -55,9 +118,7 @@ router.get('/profile', verifyToken, async (req, res) => {
         phone: base.phone || '',
         role: base.role || 'user',
         nidNumber: ext.nid_number || '',
-        dateOfBirth: ext.date_of_birth
-          ? String(ext.date_of_birth).slice(0, 10)
-          : '',
+        dateOfBirth: formatDateOnly(ext.date_of_birth),
         fatherName: ext.father_name || '',
         motherName: ext.mother_name || '',
         gender: ext.gender || '',
@@ -102,8 +163,7 @@ router.put('/profile', verifyToken, async (req, res) => {
     const presentAddress = JSON.stringify(parseAddress(req.body.presentAddress));
     const permanentAddress = JSON.stringify(parseAddress(req.body.permanentAddress));
 
-    await db.query(
-      `INSERT INTO user_profiles
+    const upsertSql = `INSERT INTO user_profiles
        (user_id, nid_number, date_of_birth, father_name, mother_name, gender, marital_status, occupation, present_address, permanent_address)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
        ON DUPLICATE KEY UPDATE
@@ -115,20 +175,29 @@ router.put('/profile', verifyToken, async (req, res) => {
          marital_status = VALUES(marital_status),
          occupation = VALUES(occupation),
          present_address = VALUES(present_address),
-         permanent_address = VALUES(permanent_address)`,
-      [
-        req.user.id,
-        nidNumber,
-        dateOfBirth,
-        fatherName,
-        motherName,
-        gender,
-        maritalStatus,
-        occupation,
-        presentAddress,
-        permanentAddress,
-      ]
-    );
+         permanent_address = VALUES(permanent_address)`;
+    const upsertParams = [
+      req.user.id,
+      nidNumber,
+      dateOfBirth,
+      fatherName,
+      motherName,
+      gender,
+      maritalStatus,
+      occupation,
+      presentAddress,
+      permanentAddress,
+    ];
+
+    try {
+      await db.query(upsertSql, upsertParams);
+    } catch (upsertErr) {
+      if (upsertErr && upsertErr.code === 'ER_NO_SUCH_TABLE' && await ensureUserProfilesTable()) {
+        await db.query(upsertSql, upsertParams);
+      } else {
+        throw upsertErr;
+      }
+    }
 
     return res.status(200).json({
       message: 'Profile updated successfully!',
