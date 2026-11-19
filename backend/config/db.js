@@ -1,19 +1,26 @@
 
-const path = require('path');
 const mysql = require('mysql2/promise');
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+const loadEnv = require('./loadEnv');
+loadEnv();
 const mockDb = require('./mockDb');
 
-let mockActive = !process.env.DB_HOST;
+const dbHost = String(process.env.DB_HOST || '').trim();
+const dbUser = String(process.env.DB_USER || 'root').trim();
+const dbPassword = process.env.DB_PASSWORD ?? '';
+const dbName = String(process.env.DB_NAME || 'govservice_db').trim();
+const dbPort = Number(process.env.DB_PORT) || 3306;
+
+let mockActive = !dbHost;
 
 let pool = null;
 if (!mockActive) {
   try {
     pool = mysql.createPool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD || '',
-      database: process.env.DB_NAME || 'govservice_db',
+      host: dbHost,
+      port: dbPort,
+      user: dbUser,
+      password: dbPassword,
+      database: dbName,
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,

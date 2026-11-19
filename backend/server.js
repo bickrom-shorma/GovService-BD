@@ -2,7 +2,8 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+const loadEnv = require('./config/loadEnv');
+loadEnv();
 
 const db = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
@@ -53,28 +54,31 @@ const frontendRootPath = path.join(__dirname, '../frontend');
 const frontendDistPath = path.join(frontendRootPath, 'dist');
 const frontendIndexHtml = path.join(frontendDistPath, 'index.html');
 
-function getLatestMtime(targetPath) {
-  if (!fs.existsSync(targetPath)) return 0;
-  const stat = fs.statSync(targetPath);
-  if (!stat.isDirectory()) return stat.mtimeMs;
-  let latest = stat.mtimeMs;
-  for (const entry of fs.readdirSync(targetPath, { withFileTypes: true })) {
-    if (entry.name === 'node_modules' || entry.name === 'dist') continue;
-    const childMtime = getLatestMtime(path.join(targetPath, entry.name));
-    if (childMtime > latest) latest = childMtime;
+function getBuiltAssetsCount() {
+  const assetsDir = path.join(frontendDistPath, 'assets');
+  if (!fs.existsSync(assetsDir)) return 0;
+  try {
+    return fs.readdirSync(assetsDir).length;
+  } catch {
+    return 0;
   }
-  return latest;
 }
 
 function needsFrontendBuild() {
+  if (process.env.FORCE_FRONTEND_BUILD === 'true') return true;
   if (!fs.existsSync(frontendIndexHtml)) return true;
-  const distMtime = fs.statSync(frontendIndexHtml).mtimeMs;
-  const srcMtime = Math.max(
-    getLatestMtime(path.join(frontendRootPath, 'src')),
-    getLatestMtime(path.join(frontendRootPath, 'public')),
-    getLatestMtime(path.join(frontendRootPath, 'index.html'))
-  );
-  return srcMtime > distMtime;
+  return getBuiltAssetsCount() === 0;
+}
+
+function resolveViteScript() {
+  const candidates = [
+    path.join(frontendRootPath, 'node_modules', 'vite', 'bin', 'vite.js'),
+    path.join(__dirname, '../node_modules', 'vite', 'bin', 'vite.js'),
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  return null;
 }
 
 let buildPromise = null;
@@ -84,13 +88,30 @@ function ensureFrontendBuilt() {
 
   buildPromise = new Promise((resolve) => {
     const isWin = process.platform === 'win32';
-    const localVite = path.join(frontendRootPath, 'node_modules/.bin', isWin ? 'vite.cmd' : 'vite');
-    const rootVite = path.join(__dirname, '../node_modules/.bin', isWin ? 'vite.cmd' : 'vite');
-    const viteBin = fs.existsSync(localVite) ? localVite : rootVite;
+    const viteScript = resolveViteScript();
+    let child;
 
-    const child = fs.existsSync(viteBin)
-      ? spawn(viteBin, ['build'], { cwd: frontendRootPath, stdio: 'inherit' })
-      : spawn(isWin ? 'npm.cmd' : 'npm', ['run', 'build'], { cwd: frontendRootPath, stdio: 'inherit' });
+    try {
+      if (viteScript) {
+        child = spawn(process.execPath, [viteScript, 'build'], {
+          cwd: frontendRootPath,
+          stdio: 'inherit',
+          windowsHide: true,
+        });
+      } else {
+        child = spawn('npm run build', {
+          cwd: frontendRootPath,
+          stdio: 'inherit',
+          shell: isWin ? true : '/bin/sh',
+          windowsHide: true,
+        });
+      }
+    } catch (err) {
+      console.error('[GovService-BD] Failed to spawn frontend build:', err.message);
+      buildPromise = null;
+      resolve();
+      return;
+    }
 
     child.on('close', (code) => {
       if (code !== 0) {

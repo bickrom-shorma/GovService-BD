@@ -1,8 +1,8 @@
 // CLI helper to create or promote an admin user safely
 // Usage: node backend/scripts/createAdmin.js <email> <password> [full_name]
 
-const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+const loadEnv = require('../config/loadEnv');
+loadEnv();
 const bcrypt = require('bcryptjs');
 const db = require('../config/db');
 
