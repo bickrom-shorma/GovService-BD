@@ -69,6 +69,46 @@ const db = {
       throw err;
     }
   },
+  withTransaction: async (fn) => {
+    if (mockActive || !pool) {
+      return mockDb.withTransaction(fn);
+    }
+
+    let connection;
+    try {
+      connection = await pool.getConnection();
+    } catch (err) {
+      const code = err?.code || err?.errors?.[0]?.code;
+      if (
+        code === 'ECONNREFUSED' ||
+        code === 'PROTOCOL_CONNECTION_LOST' ||
+        code === 'ETIMEDOUT' ||
+        code === 'ENOTFOUND' ||
+        code === 'ECONNRESET'
+      ) {
+        console.warn('[GovService-BD] MySQL connection failed, switching to fallback:', err.message || code);
+        mockActive = true;
+        return mockDb.withTransaction(fn);
+      }
+      throw err;
+    }
+
+    try {
+      await connection.beginTransaction();
+      const result = await fn(connection);
+      await connection.commit();
+      return result;
+    } catch (err) {
+      try {
+        await connection.rollback();
+      } catch {
+        // Ignore rollback errors on closed connections
+      }
+      throw err;
+    } finally {
+      connection.release();
+    }
+  },
 };
 
 module.exports = db;

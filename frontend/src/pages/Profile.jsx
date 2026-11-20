@@ -241,11 +241,27 @@ function Profile() {
     setSavingProfile(true);
 
     try {
-      await apiRequest('/api/users/profile', {
+      const res = await apiRequest('/api/users/profile', {
         method: 'PUT',
         body: JSON.stringify(profile),
       });
-      setSavedSnapshot(profile);
+      const updatedProfile = res?.profile
+        ? {
+            ...initialProfile,
+            ...res.profile,
+            email: res.profile.email || profile.email,
+            presentAddress: {
+              ...initialProfile.presentAddress,
+              ...(res.profile.presentAddress || {}),
+            },
+            permanentAddress: {
+              ...initialProfile.permanentAddress,
+              ...(res.profile.permanentAddress || {}),
+            },
+          }
+        : profile;
+      setProfile(updatedProfile);
+      setSavedSnapshot(updatedProfile);
       setIsEditing(false);
       await refreshUser();
       setStatusNotice({ type: 'success', key: 'profileUpdated' });

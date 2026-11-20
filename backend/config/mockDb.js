@@ -168,6 +168,11 @@ async function executeQuery(q, upper, params) {
   }
 
   // --- USER PROFILES ---
+  if (upper.startsWith('SELECT ID FROM USER_PROFILES WHERE USER_ID = ?')) {
+    const userId = Number(params[0]);
+    return [tables.user_profiles.filter((p) => p.user_id === userId).map((p) => ({ id: p.id })), []];
+  }
+
   if (upper.startsWith('SELECT * FROM USER_PROFILES WHERE USER_ID = ?')) {
     const userId = Number(params[0]);
     return [tables.user_profiles.filter((p) => p.user_id === userId), []];
@@ -196,6 +201,23 @@ async function executeQuery(q, upper, params) {
     const id = autoInc.user_profiles++;
     tables.user_profiles.push({ id, ...data });
     return [{ insertId: id, affectedRows: 1 }, []];
+  }
+
+  if (upper.startsWith('UPDATE USER_PROFILES SET') && upper.includes('WHERE USER_ID = ?')) {
+    const userId = Number(params[9]);
+    const profile = tables.user_profiles.find((p) => p.user_id === userId);
+    if (!profile) return [{ affectedRows: 0 }, []];
+    profile.nid_number = params[0] || null;
+    profile.date_of_birth = params[1] || null;
+    profile.father_name = params[2] || null;
+    profile.mother_name = params[3] || null;
+    profile.gender = params[4] || null;
+    profile.marital_status = params[5] || null;
+    profile.occupation = params[6] || null;
+    profile.present_address = params[7] || null;
+    profile.permanent_address = params[8] || null;
+    profile.updated_at = nowIso();
+    return [{ affectedRows: 1 }, []];
   }
 
   // --- PERSONAL DOCUMENTS ---
@@ -527,4 +549,21 @@ async function executeQuery(q, upper, params) {
   return [[], []];
 }
 
-module.exports = { query, tables };
+async function withTransaction(fn) {
+  const snapshotTables = JSON.parse(JSON.stringify(tables));
+  const snapshotAutoInc = { ...autoInc };
+  try {
+    const result = await fn({ query });
+    persistState();
+    return result;
+  } catch (err) {
+    for (const key of Object.keys(tables)) {
+      tables[key] = snapshotTables[key] || [];
+    }
+    Object.assign(autoInc, snapshotAutoInc);
+    persistState();
+    throw err;
+  }
+}
+
+module.exports = { query, tables, withTransaction };
