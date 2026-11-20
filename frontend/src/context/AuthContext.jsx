@@ -70,8 +70,10 @@ export function AuthProvider({ children }) {
         localStorage.setItem('user', JSON.stringify(data.user));
         setUser(data.user);
       }
-    } catch {
-      clearSession();
+    } catch (err) {
+      if (err?.status === 401 || err?.status === 403 || err?.status === 404) {
+        clearSession();
+      }
     } finally {
       setLoading(false);
     }
@@ -91,8 +93,10 @@ export function AuthProvider({ children }) {
           setUser(data.user);
         }
       })
-      .catch(() => {
-        if (active) clearSession();
+      .catch((err) => {
+        if (active && (err?.status === 401 || err?.status === 403 || err?.status === 404)) {
+          clearSession();
+        }
       })
       .finally(() => {
         if (active) setLoading(false);

@@ -6,6 +6,7 @@ const loadEnv = require('./config/loadEnv');
 loadEnv();
 
 const db = require('./config/db');
+const { ensureManagedServicesTable } = require('./config/schemaEnsure');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const documentRoutes = require('./routes/documentRoutes');
@@ -199,6 +200,7 @@ async function startServer() {
     const connection = await db.getConnection();
     console.log('MySQL Database Connected Successfully!');
     connection.release();
+    await ensureManagedServicesTable();
   } catch (error) {
     console.warn('Database connection failed — running with in-memory fallback:', error.message);
   }

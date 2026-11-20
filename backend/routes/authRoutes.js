@@ -154,9 +154,7 @@ router.post('/login', async (req, res) => {
 router.get('/me', verifyToken, async (req, res) => {
   try {
     const [users] = await db.query(
-      `SELECT id, full_name, email, phone, role, is_active, created_at
-       FROM users
-       WHERE id = ?`,
+      'SELECT * FROM users WHERE id = ?',
       [req.user.id]
     );
 
@@ -164,11 +162,23 @@ router.get('/me', verifyToken, async (req, res) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    if (users[0].is_active === 0) {
+    const { password_hash: _passwordHash, ...safeUser } = users[0];
+
+    if (safeUser.is_active === 0) {
       return res.status(403).json({ message: 'Account is deactivated.' });
     }
 
-    return res.status(200).json({ user: users[0] });
+    return res.status(200).json({
+      user: {
+        id: safeUser.id,
+        full_name: safeUser.full_name,
+        email: safeUser.email,
+        phone: safeUser.phone ?? null,
+        role: safeUser.role || 'user',
+        is_active: safeUser.is_active ?? 1,
+        created_at: safeUser.created_at ?? null,
+      }
+    });
   } catch (error) {
     console.error('Get current user error:', error.message);
     return res.status(500).json({ message: 'Failed to retrieve current user.' });

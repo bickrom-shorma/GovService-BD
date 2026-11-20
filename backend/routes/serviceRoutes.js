@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('../config/db');
+const { ensureManagedServicesTable } = require('../config/schemaEnsure');
 
 const router = express.Router();
 
@@ -40,9 +41,20 @@ async function getMergedCatalog() {
   });
 
   try {
-    const [managed] = await db.query(
-      'SELECT * FROM managed_services WHERE is_active = 1'
-    );
+    let managed;
+    try {
+      [managed] = await db.query(
+        'SELECT * FROM managed_services WHERE is_active = 1'
+      );
+    } catch (lookupErr) {
+      if (lookupErr && lookupErr.code === 'ER_NO_SUCH_TABLE' && await ensureManagedServicesTable()) {
+        [managed] = await db.query(
+          'SELECT * FROM managed_services WHERE is_active = 1'
+        );
+      } else {
+        throw lookupErr;
+      }
+    }
 
     managed.forEach((row) => {
       if (!categoriesMap[row.category_id]) {
@@ -67,7 +79,9 @@ async function getMergedCatalog() {
       }
     });
   } catch (err) {
-    console.warn('[GovService-BD] Managed services lookup skipped:', err.message);
+    if (err?.code !== 'ER_NO_SUCH_TABLE') {
+      console.warn('[GovService-BD] Managed services lookup skipped:', err.message);
+    }
   }
 
   return categoriesMap;
@@ -134,10 +148,22 @@ router.get('/:id', async (req, res) => {
 
     // Check database-managed services first (override or custom service)
     try {
-      const [managedRows] = await db.query(
-        'SELECT * FROM managed_services WHERE service_key = ?',
-        [id]
-      );
+      let managedRows;
+      try {
+        [managedRows] = await db.query(
+          'SELECT * FROM managed_services WHERE service_key = ?',
+          [id]
+        );
+      } catch (lookupErr) {
+        if (lookupErr && lookupErr.code === 'ER_NO_SUCH_TABLE' && await ensureManagedServicesTable()) {
+          [managedRows] = await db.query(
+            'SELECT * FROM managed_services WHERE service_key = ?',
+            [id]
+          );
+        } else {
+          throw lookupErr;
+        }
+      }
 
       if (managedRows.length > 0 && managedRows[0].is_active === 1) {
         const row = managedRows[0];
@@ -160,7 +186,9 @@ router.get('/:id', async (req, res) => {
         });
       }
     } catch (err) {
-      console.warn('[GovService-BD] Managed service detail lookup skipped:', err.message);
+      if (err?.code !== 'ER_NO_SUCH_TABLE') {
+        console.warn('[GovService-BD] Managed service detail lookup skipped:', err.message);
+      }
     }
 
     const lastDash = id.lastIndexOf('-');

@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const db = require('../config/db');
+const { ensureManagedServicesTable } = require('../config/schemaEnsure');
 const verifyToken = require('../middleware/authMiddleware');
 const requireAdmin = require('../middleware/adminMiddleware');
 
@@ -15,24 +16,54 @@ router.use(verifyToken, requireAdmin);
 // GET: Admin dashboard statistics
 router.get('/stats', async (req, res) => {
   try {
-    const [rows] = await db.query(
-      `SELECT
-        (SELECT COUNT(*) FROM users) AS totalUsers,
-        (SELECT COUNT(*) FROM personal_documents) AS totalDocuments,
-        (SELECT COUNT(*) FROM saved_services) AS totalSavedServices,
-        (SELECT COUNT(*) FROM feedback_reports) AS totalFeedback,
-        (SELECT COUNT(*) FROM feedback_reports WHERE status = 'pending') AS pendingFeedback,
-        (SELECT COUNT(*) FROM managed_services) AS totalManagedServices`
-    );
+    if (db.isMockMode()) {
+      const [rows] = await db.query(
+        `SELECT
+          (SELECT COUNT(*) FROM users) AS totalUsers,
+          (SELECT COUNT(*) FROM personal_documents) AS totalDocuments,
+          (SELECT COUNT(*) FROM saved_services) AS totalSavedServices,
+          (SELECT COUNT(*) FROM feedback_reports) AS totalFeedback,
+          (SELECT COUNT(*) FROM feedback_reports WHERE status = 'pending') AS pendingFeedback,
+          (SELECT COUNT(*) FROM managed_services) AS totalManagedServices`
+      );
+      return res.status(200).json({ stats: rows[0] });
+    }
+
+    await ensureManagedServicesTable();
+
+    const safeCount = async (sql, fallback = 0) => {
+      try {
+        const [r] = await db.query(sql);
+        return Number(r?.[0]?.cnt ?? 0);
+      } catch {
+        return fallback;
+      }
+    };
+
+    const [
+      totalUsers,
+      totalDocuments,
+      totalSavedServices,
+      totalFeedback,
+      pendingFeedback,
+      totalManagedServices,
+    ] = await Promise.all([
+      safeCount('SELECT COUNT(*) AS cnt FROM users'),
+      safeCount('SELECT COUNT(*) AS cnt FROM personal_documents'),
+      safeCount('SELECT COUNT(*) AS cnt FROM saved_services'),
+      safeCount('SELECT COUNT(*) AS cnt FROM feedback_reports'),
+      safeCount("SELECT COUNT(*) AS cnt FROM feedback_reports WHERE status = 'pending'"),
+      safeCount('SELECT COUNT(*) AS cnt FROM managed_services'),
+    ]);
 
     return res.status(200).json({
-      stats: rows[0] || {
-        totalUsers: 0,
-        totalDocuments: 0,
-        totalSavedServices: 0,
-        totalFeedback: 0,
-        pendingFeedback: 0,
-        totalManagedServices: 0,
+      stats: {
+        totalUsers,
+        totalDocuments,
+        totalSavedServices,
+        totalFeedback,
+        pendingFeedback,
+        totalManagedServices,
       }
     });
   } catch (error) {
@@ -44,11 +75,19 @@ router.get('/stats', async (req, res) => {
 // GET: List all users (never return password_hash)
 router.get('/users', async (req, res) => {
   try {
-    const [users] = await db.query(
-      `SELECT id, full_name, email, phone, role, is_active, created_at
-       FROM users
-       ORDER BY created_at DESC`
+    const [rows] = await db.query(
+      'SELECT * FROM users ORDER BY created_at DESC'
     );
+
+    const users = rows.map(({ password_hash: _passwordHash, ...u }) => ({
+      id: u.id,
+      full_name: u.full_name,
+      email: u.email,
+      phone: u.phone ?? null,
+      role: u.role || 'user',
+      is_active: u.is_active ?? 1,
+      created_at: u.created_at ?? null,
+    }));
 
     return res.status(200).json({ users });
   } catch (error) {
@@ -75,10 +114,22 @@ router.patch('/users/:id', async (req, res) => {
 
     const activeFlag = is_active === undefined ? 1 : Number(Boolean(is_active));
 
-    const [result] = await db.query(
-      'UPDATE users SET role = ?, is_active = ? WHERE id = ?',
-      [role, activeFlag, targetId]
-    );
+    let result;
+    try {
+      [result] = await db.query(
+        'UPDATE users SET role = ?, is_active = ? WHERE id = ?',
+        [role, activeFlag, targetId]
+      );
+    } catch (updateErr) {
+      if (updateErr && updateErr.code === 'ER_BAD_FIELD_ERROR') {
+        [result] = await db.query(
+          'UPDATE users SET role = ? WHERE id = ?',
+          [role, targetId]
+        );
+      } else {
+        throw updateErr;
+      }
+    }
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'User not found.' });
@@ -159,14 +210,25 @@ router.delete('/feedback/:id', async (req, res) => {
 // GET: Document management oversight (metadata only)
 router.get('/documents', async (req, res) => {
   try {
-    const [documents] = await db.query(
-      `SELECT d.id, d.user_id, d.document_name, d.document_type, d.file_name,
-              d.file_size, d.mime_type, d.uploaded_at,
-              u.full_name AS user_name, u.email AS user_email
+    const [rows] = await db.query(
+      `SELECT d.*, u.full_name AS user_name, u.email AS user_email
        FROM personal_documents d
        JOIN users u ON d.user_id = u.id
        ORDER BY d.uploaded_at DESC`
     );
+
+    const documents = rows.map((d) => ({
+      id: d.id,
+      user_id: d.user_id,
+      document_name: d.document_name,
+      document_type: d.document_type ?? null,
+      file_name: d.file_name,
+      file_size: d.file_size ?? null,
+      mime_type: d.mime_type ?? null,
+      uploaded_at: d.uploaded_at ?? null,
+      user_name: d.user_name,
+      user_email: d.user_email,
+    }));
 
     return res.status(200).json({ documents });
   } catch (error) {
@@ -206,11 +268,15 @@ router.delete('/documents/:id', async (req, res) => {
 // GET: List managed/custom services
 router.get('/services', async (req, res) => {
   try {
+    await ensureManagedServicesTable();
     const [services] = await db.query(
       'SELECT * FROM managed_services ORDER BY updated_at DESC'
     );
     return res.status(200).json({ services });
   } catch (error) {
+    if (error && error.code === 'ER_NO_SUCH_TABLE') {
+      return res.status(200).json({ services: [] });
+    }
     console.error('Admin list services error:', error.message);
     return res.status(500).json({ message: 'Failed to retrieve managed services.' });
   }
@@ -219,6 +285,7 @@ router.get('/services', async (req, res) => {
 // POST: Create or upsert a managed service
 router.post('/services', async (req, res) => {
   try {
+    await ensureManagedServicesTable();
     const service_key = String(req.body.service_key || '').trim();
     const category_id = String(req.body.category_id || '').trim();
     const category_name = String(req.body.category_name || '').trim();

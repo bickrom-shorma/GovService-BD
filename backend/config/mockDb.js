@@ -113,7 +113,10 @@ async function executeQuery(q, upper, params) {
     return [rows, []];
   }
 
-  if (upper.startsWith('SELECT ID, FULL_NAME, EMAIL, PHONE, ROLE, IS_ACTIVE, CREATED_AT FROM USERS')) {
+  if (
+    upper.startsWith('SELECT ID, FULL_NAME, EMAIL, PHONE, ROLE, IS_ACTIVE, CREATED_AT FROM USERS') ||
+    upper.startsWith('SELECT * FROM USERS')
+  ) {
     const rows = [...tables.users]
       .sort((a, b) => b.id - a.id)
       .map(({ password_hash, ...safe }) => safe);
@@ -163,6 +166,15 @@ async function executeQuery(q, upper, params) {
     if (!user) return [{ affectedRows: 0 }, []];
     user.role = params[0];
     user.is_active = Number(params[1]);
+    user.updated_at = nowIso();
+    return [{ affectedRows: 1 }, []];
+  }
+
+  if (upper.startsWith('UPDATE USERS SET ROLE = ? WHERE ID = ?')) {
+    const id = Number(params[1]);
+    const user = tables.users.find((u) => u.id === id);
+    if (!user) return [{ affectedRows: 0 }, []];
+    user.role = params[0];
     user.updated_at = nowIso();
     return [{ affectedRows: 1 }, []];
   }
