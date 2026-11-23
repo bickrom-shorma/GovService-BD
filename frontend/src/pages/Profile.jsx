@@ -690,7 +690,7 @@ function Profile() {
             <p>{t('savedServicesDesc')}</p>
 
             {savedServices.length === 0 ? (
-              <div className="account-empty-state">
+              <div className = "account-empty-state">
                 <span>⭐</span>
                 <h3>{t('noSavedTitle')}</h3>
                 <p>{t('noSavedDesc')}</p>
@@ -747,7 +747,7 @@ function Profile() {
                   >
                     {allServices.map((item) => (
                       <option key={item.id} value={item.id}>
-                        {categoryTitle(item.categoryId, item.categoryName)} - {serviceName(item.serviceName)}
+                          {categoryTitle(item.categoryId, item.categoryName)} - {serviceName(item.serviceName)}
                       </option>
                     ))}
                   </select>
@@ -796,9 +796,9 @@ function Profile() {
                         </div>
 
                         <div className="checklist-document-list">
-                          <h3>{t('tabDocuments')}</h3>
+                          <h3> {t('tabDocuments')}</h3>
                           {canonicalDocuments.map((canonicalDoc, idx) => (
-                            <label
+                            <label  
                               className="checklist-document-item"
                               key={canonicalDoc}
                             >
@@ -1093,6 +1093,7 @@ function Profile() {
                 setIsEditing(false);
               }}
             >
+
               <span>{item.icon}</span>
               {item.label}
             </button>
@@ -1108,6 +1109,7 @@ function Profile() {
         </button>
       </aside>
 
+
       <main className="account-main">
         <div className="account-topbar">
           <h2>{activeMenuItem?.label || activeSection}</h2>
@@ -1116,11 +1118,12 @@ function Profile() {
 
         {statusNotice && (
           <div
-            className={`alert alert-${statusNotice.type === 'danger' ? 'danger' : 'success'} py-2 px-3 mb-3`}
+            className= {`alert alert-${statusNotice.type === 'danger' ? 'danger' : 'success'} py-2 px-3 mb-3`}
             role="alert"
           >
             {statusNotice.key
               ? t(statusNotice.key)
+
               : translateMessage(statusNotice.raw, statusNotice.fallbackKey)}
           </div>
         )}
