@@ -1,8 +1,4 @@
 
-/* =========================
-   MAIN NAVBAR
-========================= */
-
 .main-navbar {
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border-color);
@@ -24,10 +20,6 @@
   align-items: center;
   justify-content: space-between;
 }
-
-/* =========================
-   BRAND
-========================= */
 
 .navbar-brand {
   display: flex;
@@ -63,10 +55,6 @@
 .brand-text span {
   color: var(--accent-nav);
 }
-
-/* =========================
-   NAVIGATION MENU
-========================= */
 
 .navbar-menu {
   display: flex;
@@ -109,9 +97,6 @@
   background: var(--accent-nav);
 }
 
-/* =========================
-   NAVBAR ACTIONS
-========================= */
 
 .navbar-actions {
   display: flex;
@@ -119,6 +104,7 @@
   gap: 13px;
 }
 
+<<<<<<< HEAD
 /* Theme Toggle Button */
 
 .theme-toggle-button {
@@ -161,6 +147,8 @@
 
 /* Language Selector */
 
+=======
+>>>>>>> fc9fc12 ( change style in frontend)
 .language-wrapper {
   display: flex;
   align-items: center;
@@ -211,8 +199,6 @@
   transform: translateY(-2px);
 }
 
-/* Register Button */
-
 .register-button {
   padding: 10px 22px;
   border: 1px solid var(--accent-primary);
@@ -234,10 +220,6 @@
   box-shadow: 0 5px 12px rgba(9, 102, 223, 0.25);
 }
 
-/* =========================
-   MOBILE TOGGLE
-========================= */
-
 .navbar-toggle {
   display: none;
   border: none;
@@ -255,9 +237,6 @@
   background: var(--bg-badge-soft);
 }
 
-/* =========================
-   RESPONSIVE DESIGN
-========================= */
 
 @media (max-width: 900px) {
   .navbar-container {
