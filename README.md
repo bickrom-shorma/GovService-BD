@@ -62,17 +62,5 @@ GovService-BD/
    ```
    Or set `ADMIN_BOOTSTRAP_EMAIL` and `ADMIN_BOOTSTRAP_PASSWORD` in `.env` before starting the server.
 
-## Development & Build
 
-- **Build frontend and start server**:
-  ```bash
-  npm run dev
-  ```
-- **Build frontend only**:
-  ```bash
-  npm run build
-  ```
-- **Lint frontend**:
-  ```bash
-  npm run lint
   ```
