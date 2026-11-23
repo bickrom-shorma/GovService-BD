@@ -6,15 +6,13 @@
 .register-card h2 {
   margin-bottom: 10px;
 }
-
 .register-card .auth-form-group {
-  margin-bottom: 16px;
+  margin-bottom: 15px;
 }
 
 .register-card .auth-form-group input {
   padding: 11px 14px;
 }
-
 .register-card .auth-button {
   margin-top: 5px;
 }
