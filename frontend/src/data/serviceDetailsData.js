@@ -4,8 +4,8 @@ const serviceDetailsData = {
   // =====================================================
 
   'nid-0': {
-    overview:
-      'Bangladeshi citizens who meet the legal eligibility requirements can apply for a new National Identity Card (NID). The registration process collects personal information such as name, date of birth, address and family details. Applicants must provide accurate information and supporting documents. After submitting the application, the Election Commission may verify the information before completing registration and issuing the NID.',
+   overview:
+  'Bangladeshi citizens who meet the eligibility requirements established by the Election Commission of Bangladesh can apply for a new National Identity Card (NID). The application process involves providing essential personal information, including full name, date of birth, gender, place of birth, present and permanent addresses, and parents’ details. Applicants must complete the prescribed registration form and submit accurate supporting documents, such as a birth registration certificate, educational certificates, parents’ NID information, and proof of address, where applicable. The Election Commission reviews the submitted information and may conduct additional verification or request corrections if necessary. Applicants may also need to provide biometric information, including fingerprints, photographs, and iris scans. Once the application is verified and approved, the applicant is registered in the national identity database and issued a National Identity Card (NID), which can be used as official identification for various government and private services.',
 
     estimatedCost: 'Free for new voter registration.',
     processingTime:
@@ -76,7 +76,7 @@ const serviceDetailsData = {
 
   'nid-1': {
     overview:
-      'If your National Identity Card is lost, damaged or unusable, you can apply for a reissue through the official NID Services portal. The reissue process allows eligible NID holders to obtain another copy of their identity card. Applicants must provide their existing NID information and complete the required verification process. A reissue fee may apply depending on the type of application.',
+     'If your National Identity Card (NID) is lost, damaged, stolen or becomes unusable, eligible NID holders can apply for a reissue through the official NID Services portal. The reissue process allows applicants to obtain a replacement copy of their existing identity card without applying for a completely new NID. Applicants must provide their existing NID number and relevant personal information, select the appropriate reissue reason, and complete the required application and verification procedures. Depending on the circumstances, additional supporting documents or a police report may be required, particularly for lost cards. The Election Commission reviews the submitted application and verifies the provided information before approving the reissue request. Applicants may be required to pay a prescribed reissue fee, which varies depending on the application type and applicable government regulations. Once the application is approved and the required payment is completed, the replacement NID can be collected or downloaded according to the available service options.',
 
     estimatedCost:
       'A reissue fee may apply. The amount depends on the application type and applicable government fee rules.',
