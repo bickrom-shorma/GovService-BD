@@ -10,6 +10,17 @@
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
+.navbar-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
 .navbar-brand {
   display: flex;
   align-items: center;
@@ -93,7 +104,6 @@
   gap: 13px;
 }
 
-<<<<<<< HEAD
 /* Theme Toggle Button */
 
 .theme-toggle-button {
@@ -136,8 +146,6 @@
 
 /* Language Selector */
 
-=======
->>>>>>> fc9fc12 ( change style in frontend)
 .language-wrapper {
   display: flex;
   align-items: center;
