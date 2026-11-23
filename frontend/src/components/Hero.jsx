@@ -73,6 +73,7 @@ function Hero() {
     setSearched(true);
   };
 
+  
   const handleResultClick = (result) => {
     navigate(`/category/${result.categoryId}/service/${result.serviceIndex}`);
   };
@@ -151,4 +152,5 @@ function Hero() {
   );
 }
 
-export default Hero;
+export default Hero ;
+
