@@ -1102,7 +1102,6 @@ function Profile() {
         <button
           type="button"
           className="account-logout"
-          style={{ border: 'none', background: 'transparent', width: '100%', textAlign: 'left', cursor: 'pointer' }}
           onClick={handleLogout}
         >
           <span>↪</span> {t('navLogout')}

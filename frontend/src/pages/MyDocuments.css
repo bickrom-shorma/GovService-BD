@@ -12,16 +12,16 @@
 .documents-header h2 {
   font-size: 28px;
   font-weight: 700;
-  color: #1b4332;
+  color: var(--text-heading-green);
 }
 
 .documents-header p {
-  color: #666;
+  color: var(--text-muted);
 }
 
 .document-upload-box {
-  background: #f8faf9;
-  border: 2px dashed #198754;
+  background: var(--bg-upload);
+  border: 2px dashed var(--accent-green);
   border-radius: 10px;
   padding: 30px;
   margin-bottom: 30px;
@@ -30,7 +30,11 @@
 .document-upload-box h3,
 .documents-list h3 {
   margin-bottom: 15px;
-  color: #234b38;
+  color: var(--text-heading-green);
+}
+
+.document-upload-box p {
+  color: var(--text-muted);
 }
 
 .document-upload-box input {
@@ -38,14 +42,15 @@
 }
 
 .documents-list {
-  background: white;
+  background: var(--bg-surface);
   padding: 20px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 10px;
+  box-shadow: var(--shadow-card);
 }
 
 .empty-documents {
-  color: #777;
+  color: var(--text-subtle);
   padding: 20px 0;
 }
 
@@ -55,17 +60,22 @@
   align-items: center;
   gap: 15px;
   padding: 18px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.document-item:last-child {
+  border-bottom: none;
 }
 
 .document-item h4 {
   font-size: 16px;
   margin-bottom: 5px;
+  color: var(--text-primary);
   word-break: break-word;
 }
 
 .document-item p {
-  color: #777;
+  color: var(--text-subtle);
   font-size: 13px;
   margin: 0;
 }
@@ -78,18 +88,44 @@
 }
 
 .document-actions a {
-  color: #198754;
+  color: var(--accent-green);
   text-decoration: none;
   font-weight: 600;
 }
 
-.document-actions button {
+.document-actions .document-view-btn {
+  background: transparent;
+  color: var(--accent-green);
+  border: 1px solid var(--accent-green);
+}
+
+.document-actions .document-view-btn:hover {
+  background: var(--accent-green);
+  color: #ffffff;
+}
+
+.document-actions .document-download-btn {
+  background: var(--accent-green);
+  border: 1px solid var(--accent-green);
+  color: #ffffff;
+}
+
+.document-actions .document-download-btn:hover {
+  background: var(--accent-green-hover);
+  border-color: var(--accent-green-hover);
+}
+
+.document-actions .document-delete-btn {
   background: #dc3545;
-  color: white;
+  color: #ffffff;
   border: none;
   padding: 7px 12px;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.document-actions .document-delete-btn:hover {
+  background: #c82333;
 }
 
 @media (max-width: 600px) {

@@ -3,7 +3,7 @@
   max-width: 1150px;
   margin: 30px auto;
   padding: 20px;
-  color: #102747;
+  color: var(--text-heading-alt);
   font-family: Arial, sans-serif;
 }
 
@@ -11,7 +11,7 @@
 .back-link {
   display: inline-block;
   margin-bottom: 20px;
-  color: #075ed8;
+  color: var(--accent-primary);
   text-decoration: none;
   font-size: 14px;
   font-weight: 600;
@@ -35,8 +35,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #e8f2ff;
-  color: #075ed8;
+  background: var(--bg-active);
+  color: var(--accent-primary);
   border-radius: 12px;
   font-size: 27px;
 }
@@ -44,12 +44,12 @@
 .service-details-heading h2 {
   font-size: 25px;
   font-weight: 700;
-  color: #102747;
+  color: var(--text-heading-alt);
   margin-bottom: 5px;
 }
 
 .service-details-heading p {
-  color: #64748b;
+  color: var(--text-muted);
   font-size: 14px;
   margin: 0;
 }
@@ -67,10 +67,10 @@
   align-items: center;
   gap: 15px;
   padding: 18px;
-  background: #ffffff;
-  border: 1px solid #e1eaf5;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card-alt);
   border-radius: 9px;
-  box-shadow: 0 2px 8px rgba(15, 45, 80, 0.04);
+  box-shadow: var(--shadow-card);
 }
 
 .info-card > span {
@@ -79,8 +79,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #e8f2ff;
-  color: #075ed8;
+  background: var(--bg-active);
+  color: var(--accent-primary);
   border-radius: 10px;
   font-size: 21px;
   flex-shrink: 0;
@@ -88,13 +88,13 @@
 
 .info-card small {
   display: block;
-  color: #64748b;
+  color: var(--text-muted);
   font-size: 12px;
   margin-bottom: 6px;
 }
 
 .info-card h4 {
-  color: #102747;
+  color: var(--text-heading-alt);
   font-size: 14px;
   font-weight: 700;
   margin: 0;
@@ -110,8 +110,8 @@
 
 /* Sidebar */
 .details-sidebar {
-  background: #ffffff;
-  border: 1px solid #e1eaf5;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card-alt);
   border-radius: 9px;
   padding: 10px;
 }
@@ -126,7 +126,7 @@
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: #263f60;
+  color: var(--text-body);
   text-align: left;
   font-size: 13px;
   font-weight: 500;
@@ -139,13 +139,13 @@
 }
 
 .details-sidebar button:hover {
-  background: #eef5ff;
-  color: #075ed8;
+  background: var(--bg-hover);
+  color: var(--accent-primary);
 }
 
 .details-sidebar button.active {
-  background: #e3efff;
-  color: #075ed8;
+  background: var(--bg-active);
+  color: var(--accent-primary);
   font-weight: 700;
 }
 
@@ -153,21 +153,21 @@
 .details-content-panel {
   min-height: 240px;
   padding: 25px;
-  background: #ffffff;
-  border: 1px solid #e1eaf5;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card-alt);
   border-radius: 9px;
-  box-shadow: 0 2px 8px rgba(15, 45, 80, 0.04);
+  box-shadow: var(--shadow-card);
 }
 
 .details-content-panel h3 {
-  color: #102747;
+  color: var(--text-heading-alt);
   font-size: 19px;
   font-weight: 700;
   margin-bottom: 18px;
 }
 
 .details-content-panel p {
-  color: #526780;
+  color: var(--text-panel);
   font-size: 14px;
   line-height: 1.8;
   margin-bottom: 12px;
@@ -211,7 +211,7 @@
 }
 
 .service-information-list li {
-  color: #526780;
+  color: var(--text-panel);
   font-size: 14px;
   line-height: 1.8;
   margin-bottom: 10px;
@@ -221,8 +221,8 @@
   display: inline-block;
   margin-top: 15px;
   padding: 11px 18px;
-  background: #075ed8;
-  color: white;
+  background: var(--accent-primary);
+  color: #ffffff;
   border-radius: 6px;
   text-decoration: none;
   font-size: 14px;
@@ -230,8 +230,8 @@
 }
 
 .official-link-button:hover {
-  background: #064db2;
-  color: white;
+  background: var(--accent-primary-hover);
+  color: #ffffff;
 }
 
 
@@ -240,7 +240,7 @@
 }
 
 .application-guideline-section h4 {
-  color: #075ed8;
+  color: var(--accent-primary);
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 10px;
@@ -255,10 +255,10 @@
   display: inline-block;
   margin: 18px 0;
   padding: 10px 22px;
-  border: 1px solid #2563eb;
+  border: 1px solid var(--accent-primary);
   border-radius: 8px;
-  background: #ffffff;
-  color: #2563eb;
+  background: var(--bg-surface);
+  color: var(--accent-primary);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -266,12 +266,12 @@
 }
 
 .save-service-button:hover {
-  background: #2563eb;
+  background: var(--accent-primary);
   color: #ffffff;
 }
 
 .save-service-button.saved {
-  background: #2563eb;
+  background: var(--accent-primary);
   color: #ffffff;
 }
 

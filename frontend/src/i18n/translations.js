@@ -14,6 +14,10 @@ export const translations = {
     navLogout: 'Logout',
     toggleNavLabel: 'Toggle navigation',
     selectLangLabel: 'Select language',
+    switchToDark: 'Switch to Dark Mode',
+    switchToLight: 'Switch to Light Mode',
+    lightModeLabel: 'Light Mode',
+    darkModeLabel: 'Dark Mode',
 
     heroTitle: 'Get Government Services Online',
     heroDesc:
@@ -344,6 +348,10 @@ export const translations = {
     navLogout: 'লগআউট',
     toggleNavLabel: 'নেভিগেশন মেনু খুলুন বা বন্ধ করুন',
     selectLangLabel: 'ভাষা নির্বাচন করুন',
+    switchToDark: 'ডার্ক মোডে পরিবর্তন করুন',
+    switchToLight: 'লাইট মোডে পরিবর্তন করুন',
+    lightModeLabel: 'লাইট মোড',
+    darkModeLabel: 'ডার্ক মোড',
 
     heroTitle: 'অনলাইনে সরকারি সেবা সম্পর্কে জানুন',
     heroDesc: 'সকল সরকারি সেবা, প্রয়োজনীয় কাগজপত্র, ফি এবং আবেদন নির্দেশিকা এক জায়গায় পান।',

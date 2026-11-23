@@ -1,23 +1,198 @@
 
+:root,
+[data-bs-theme='light'] {
+  --bg-body: #ffffff;
+  --bg-page: #f5f7fb;
+  --bg-page-alt: #f4f7fb;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f8faff;
+  --bg-muted: #f2f6fc;
+  --bg-hover: #f0f5ff;
+  --bg-active: #e8f1ff;
+  --bg-badge-soft: #dceaff;
+  --bg-input: #ffffff;
+  --bg-input-disabled: #f5f7fb;
+  --bg-upload: #f8faf9;
+  --bg-btn-neutral: #e9ecef;
+  --bg-btn-neutral-hover: #dfe3e7;
+  --bg-danger-soft: #fff0f1;
+  --bg-danger-soft-hover: #ffe0e3;
+  --bg-success-soft: #eaf8ef;
+  --bg-ai-page: #f1f5f9;
+  --bg-ai-suggestion: #f8fafc;
+  --bg-ai-suggestion-hover: #eff6ff;
+  --bg-ai-bubble: #f1f5f9;
+
+  --text-primary: #222222;
+  --text-heading: #17365d;
+  --text-heading-alt: #102747;
+  --text-heading-green: #1b4332;
+  --text-heading-green-alt: #164e36;
+  --text-body: #334155;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-subtle: #777777;
+  --text-panel: #526780;
+
+  --border-color: #e5e9f0;
+  --border-subtle: #e8edf4;
+  --border-card-alt: #e1eaf5;
+  --border-input: #d5dce5;
+  --border-dashed: #d5deed;
+
+  --accent-primary: #075ed8;
+  --accent-primary-hover: #064bb0;
+  --accent-nav: #0966df;
+  --accent-nav-hover: #0755bd;
+  --accent-bs: #0d6efd;
+  --accent-bs-hover: #084db5;
+  --accent-bs-disabled: #94bdf5;
+  --accent-green: #198754;
+  --accent-green-hover: #157347;
+  --text-success-soft: #217a40;
+  --danger-color: #dc3545;
+  --danger-hover: #c82333;
+
+  --shadow-navbar: 0 4px 15px rgba(15, 45, 85, 0.06);
+  --shadow-card: 0 3px 12px rgba(0, 0, 0, 0.03);
+  --shadow-card-hover: 0 6px 18px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 5px 25px rgba(0, 0, 0, 0.08);
+  --focus-ring: rgba(7, 94, 216, 0.12);
+}
+
+[data-bs-theme='dark'] {
+  --bg-body: #0b1120;
+  --bg-page: #0f172a;
+  --bg-page-alt: #0f172a;
+  --bg-surface: #1e293b;
+  --bg-subtle: #162033;
+  --bg-muted: #1b273b;
+  --bg-hover: #25344d;
+  --bg-active: rgba(59, 130, 246, 0.18);
+  --bg-badge-soft: rgba(59, 130, 246, 0.22);
+  --bg-input: #0f172a;
+  --bg-input-disabled: #172033;
+  --bg-upload: #132220;
+  --bg-btn-neutral: #334155;
+  --bg-btn-neutral-hover: #475569;
+  --bg-danger-soft: rgba(239, 68, 68, 0.15);
+  --bg-danger-soft-hover: rgba(239, 68, 68, 0.25);
+  --bg-success-soft: rgba(34, 197, 94, 0.16);
+  --bg-ai-page: #0f172a;
+  --bg-ai-suggestion: #162033;
+  --bg-ai-suggestion-hover: #24334d;
+  --bg-ai-bubble: #263449;
+
+  --text-primary: #f1f5f9;
+  --text-heading: #f1f5f9;
+  --text-heading-alt: #e2e8f0;
+  --text-heading-green: #6ee7b7;
+  --text-heading-green-alt: #6ee7b7;
+  --text-body: #e2e8f0;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-subtle: #94a3b8;
+  --text-panel: #cbd5e1;
+
+  --border-color: #334155;
+  --border-subtle: #293548;
+  --border-card-alt: #334155;
+  --border-input: #475569;
+  --border-dashed: #475569;
+
+  --accent-primary: #3b82f6;
+  --accent-primary-hover: #2563eb;
+  --accent-nav: #60a5fa;
+  --accent-nav-hover: #93c5fd;
+  --accent-bs: #3b82f6;
+  --accent-bs-hover: #2563eb;
+  --accent-bs-disabled: #1e40af;
+  --accent-green: #22c55e;
+  --accent-green-hover: #16a34a;
+  --text-success-soft: #86efac;
+  --danger-color: #f87171;
+  --danger-hover: #ef4444;
+
+  --shadow-navbar: 0 4px 18px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 3px 14px rgba(0, 0, 0, 0.28);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.45);
+  --focus-ring: rgba(96, 165, 250, 0.25);
+
+  --bs-body-bg: #0f172a;
+  --bs-body-color: #f1f5f9;
+  --bs-secondary-color: #94a3b8;
+  --bs-border-color: #334155;
+  --bs-tertiary-bg: #162033;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+select option {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+[data-bs-theme='dark'] .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--text-primary);
+  --bs-table-border-color: var(--border-color);
+  --bs-table-striped-bg: rgba(255, 255, 255, 0.02);
+  --bs-table-hover-bg: rgba(255, 255, 255, 0.04);
+}
+
+[data-bs-theme='dark'] .list-group-item {
+  background-color: var(--bg-subtle);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+[data-bs-theme='dark'] .modal-content {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+[data-bs-theme='dark'] .form-control,
+[data-bs-theme='dark'] .form-select {
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  border-color: var(--border-input);
+}
+
+[data-bs-theme='dark'] .form-control::placeholder {
+  color: var(--text-muted);
+}
+
+[data-bs-theme='dark'] .form-control:focus,
+[data-bs-theme='dark'] .form-select:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
 .account-container {
   display: flex;
   min-height: 85vh;
-  background: #f5f7fb;
+  background: var(--bg-page);
 }
 
 /* Sidebar */
 
 .account-sidebar {
   width: 270px;
-  background: #ffffff;
+  background: var(--bg-surface);
   padding: 25px 18px;
-  border-right: 1px solid #e5e9f0;
+  border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
 }
 
 .account-sidebar > h2 {
-  color: #075ed8;
+  color: var(--accent-primary);
   font-size: 23px;
   font-weight: 700;
   margin-bottom: 30px;
@@ -28,7 +203,7 @@
   align-items: center;
   gap: 12px;
   padding: 15px 10px;
-  background: #f2f6fc;
+  background: var(--bg-muted);
   border-radius: 10px;
   margin-bottom: 25px;
 }
@@ -36,7 +211,7 @@
 .account-avatar {
   width: 45px;
   height: 45px;
-  background: #dceaff;
+  background: var(--bg-badge-soft);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -47,12 +222,12 @@
 .account-user h4 {
   font-size: 15px;
   margin: 0;
-  color: #222;
+  color: var(--text-primary);
 }
 
 .account-user p {
   font-size: 12px;
-  color: #777;
+  color: var(--text-subtle);
   margin: 4px 0 0;
 }
 
@@ -73,7 +248,7 @@
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #555;
+  color: var(--text-secondary);
   font-size: 14px;
   text-align: left;
   cursor: pointer;
@@ -81,13 +256,13 @@
 }
 
 .account-menu-item:hover {
-  background: #f0f5ff;
-  color: #075ed8;
+  background: var(--bg-hover);
+  color: var(--accent-primary);
 }
 
 .account-menu-item.active {
-  background: #e8f1ff;
-  color: #075ed8;
+  background: var(--bg-active);
+  color: var(--accent-primary);
   font-weight: 600;
 }
 
@@ -97,15 +272,15 @@
   gap: 12px;
   padding: 13px 14px;
   margin-top: auto;
-  color: #dc3545;
+  color: var(--danger-color);
   text-decoration: none;
   font-size: 14px;
   border-radius: 8px;
 }
 
 .account-logout:hover {
-  background: #fff0f1;
-  color: #c82333;
+  background: var(--bg-danger-soft);
+  color: var(--danger-hover);
 }
 
 /* Main Content */
@@ -122,18 +297,18 @@
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 18px;
-  border-bottom: 1px solid #e5e9f0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .account-topbar h2 {
   font-size: 24px;
   font-weight: 700;
-  color: #222;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .account-topbar span {
-  color: #777;
+  color: var(--text-subtle);
   font-size: 14px;
 }
 
@@ -143,13 +318,13 @@
 .account-section h2 {
   font-size: 22px;
   font-weight: 700;
-  color: #222;
+  color: var(--text-primary);
   margin-bottom: 10px;
 }
 
 .account-overview > p,
 .account-section > p {
-  color: #777;
+  color: var(--text-subtle);
   font-size: 15px;
   margin-bottom: 28px;
 }
@@ -161,17 +336,17 @@
 }
 
 .overview-card {
-  background: #ffffff;
+  background: var(--bg-surface);
   padding: 25px 20px;
   border-radius: 10px;
-  border: 1px solid #e8edf4;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
   transition: 0.3s;
 }
 
 .overview-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .overview-card > span {
@@ -180,7 +355,7 @@
   justify-content: center;
   width: 48px;
   height: 48px;
-  background: #e8f1ff;
+  background: var(--bg-active);
   border-radius: 10px;
   font-size: 23px;
   margin-bottom: 17px;
@@ -189,12 +364,12 @@
 .overview-card h3 {
   font-size: 17px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-body);
   margin-bottom: 10px;
 }
 
 .overview-card p {
-  color: #777;
+  color: var(--text-subtle);
   font-size: 14px;
   line-height: 1.6;
   margin: 0;
@@ -216,7 +391,7 @@
   .account-sidebar {
     width: 100%;
     border-right: none;
-    border-bottom: 1px solid #e5e9f0;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .account-logout {

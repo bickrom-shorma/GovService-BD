@@ -202,7 +202,18 @@ async function startServer() {
     connection.release();
     await ensureManagedServicesTable();
   } catch (error) {
-    console.warn('Database connection failed — running with in-memory fallback:', error.message);
+    const errCode = error?.code || error?.errors?.[0]?.code;
+    if (
+      !process.env.DB_HOST ||
+      errCode === 'ECONNREFUSED' ||
+      errCode === 'ENOTFOUND' ||
+      errCode === 'ETIMEDOUT' ||
+      errCode === 'EHOSTUNREACH'
+    ) {
+      console.log('[GovService-BD] MySQL server not reachable — running with in-memory fallback.');
+    } else {
+      console.warn('Database connection failed — running with in-memory fallback:', error.message || errCode);
+    }
   }
 
   await bootstrapAdminFromEnv();

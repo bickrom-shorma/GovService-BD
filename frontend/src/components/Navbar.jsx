@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import './Navbar.css';
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   const { isAuthenticated, isAdmin, user, logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const closeMenu = () => setMenuOpen(false);
@@ -123,6 +125,53 @@ function Navbar() {
           </div>
 
           <div className="navbar-actions">
+
+            {/* Theme Toggle */}
+            <button
+              type="button"
+              className="theme-toggle-button"
+              onClick={toggleTheme}
+              aria-label={isDark ? t('switchToLight') : t('switchToDark')}
+              aria-pressed={isDark}
+              title={isDark ? t('switchToLight') : t('switchToDark')}
+            >
+              <span className={`theme-icon-slot ${!isDark ? 'active' : ''}`} aria-hidden="true">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2" />
+                  <path d="M12 20v2" />
+                  <path d="m4.93 4.93 1.41 1.41" />
+                  <path d="m17.66 17.66 1.41 1.41" />
+                  <path d="M2 12h2" />
+                  <path d="M20 12h2" />
+                  <path d="m6.34 17.66-1.41 1.41" />
+                  <path d="m19.07 4.93-1.41 1.41" />
+                </svg>
+              </span>
+              <span className={`theme-icon-slot ${isDark ? 'active' : ''}`} aria-hidden="true">
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                </svg>
+              </span>
+            </button>
 
             {/* Language Selector */}
             <div className="language-wrapper">

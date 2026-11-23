@@ -334,7 +334,7 @@ function MyDocuments() {
             <iframe
               src={previewDoc.url}
               title={previewDoc.name}
-              style={{ width: '100%', height: '460px', border: '1px solid #ddd', borderRadius: '8px' }}
+              style={{ width: '100%', height: '460px', border: '1px solid var(--border-color)', borderRadius: '8px' }}
             />
           ) : (
             <p className="mb-0 text-muted">
@@ -372,21 +372,23 @@ function MyDocuments() {
               <div className="document-actions">
                 <button
                   type="button"
-                  className="btn btn-sm btn-outline-success"
-                  style={{ background: 'transparent', color: '#198754', border: '1px solid #198754' }}
+                  className="btn btn-sm btn-outline-success document-view-btn"
                   onClick={() => handleView(doc)}
                 >
                   {t('view')}
                 </button>
                 <button
                   type="button"
-                  className="btn btn-sm btn-success"
-                  style={{ background: '#198754', color: '#fff' }}
+                  className="btn btn-sm btn-success document-download-btn"
                   onClick={() => handleDownload(doc)}
                 >
                   {t('download')}
                 </button>
-                <button type="button" onClick={() => handleDelete(doc.id)}>
+                <button
+                  type="button"
+                  className="document-delete-btn"
+                  onClick={() => handleDelete(doc.id)}
+                >
                   {t('delete')}
                 </button>
               </div>
