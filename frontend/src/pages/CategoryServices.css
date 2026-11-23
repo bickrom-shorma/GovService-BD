@@ -31,7 +31,6 @@
   box-shadow: var(--shadow-card);
   transition: 0.3s;
 }
-
 .service-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-card-hover);
@@ -42,13 +41,13 @@
   font-weight: 600;
 }
 
-.service-card span:last-child {
+.service-card  span:last-child {
   color: var(--accent-green);
   font-size: 14px;
   white-space: nowrap;
 }
 
-@media (max-width: 576px) {
+@media (max-width:576px) {
   .service-card {
     padding: 15px;
     gap: 10px;
