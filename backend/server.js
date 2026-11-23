@@ -65,10 +65,38 @@ function getBuiltAssetsCount() {
   }
 }
 
+function getLatestMtimeMs(dirPath) {
+  let latest = 0;
+  if (!fs.existsSync(dirPath)) return 0;
+  const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dirPath, entry.name);
+    if (entry.isDirectory()) {
+      const subLatest = getLatestMtimeMs(fullPath);
+      if (subLatest > latest) latest = subLatest;
+    } else {
+      try {
+        const mtime = fs.statSync(fullPath).mtimeMs;
+        if (mtime > latest) latest = mtime;
+      } catch {
+        // Ignore stat error
+      }
+    }
+  }
+  return latest;
+}
+
 function needsFrontendBuild() {
   if (process.env.FORCE_FRONTEND_BUILD === 'true') return true;
   if (!fs.existsSync(frontendIndexHtml)) return true;
-  return getBuiltAssetsCount() === 0;
+  if (getBuiltAssetsCount() === 0) return true;
+  try {
+    const distMtime = fs.statSync(frontendIndexHtml).mtimeMs;
+    const srcMtime = getLatestMtimeMs(path.join(frontendRootPath, 'src'));
+    return srcMtime > distMtime;
+  } catch {
+    return false;
+  }
 }
 
 function resolveViteScript() {
@@ -139,7 +167,15 @@ app.use((req, res, next) => {
   return next();
 });
 
-app.use(express.static(frontendDistPath));
+app.use(
+  express.static(frontendDistPath, {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    },
+  })
+);
 
 // Serve favicon cleanly if requested at /favicon.ico
 app.get('/favicon.ico', (req, res) => {
@@ -152,6 +188,7 @@ app.get('/{*splat}', (req, res) => {
   if (!fs.existsSync(frontendIndexHtml)) {
     return res.status(503).send('Frontend build is still initializing. Please refresh.');
   }
+  res.setHeader('Cache-Control', 'no-cache');
   return res.sendFile(frontendIndexHtml);
 });
 
