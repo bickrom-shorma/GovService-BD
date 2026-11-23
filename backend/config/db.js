@@ -51,7 +51,7 @@ const db = {
         code === 'ENOTFOUND' ||
         code === 'ECONNRESET'
       ) {
-        console.log('[GovService-BD] MySQL server unreachable — using in-memory fallback.');
+        console.warn('[GovService-BD] MySQL query failed, switching to fallback:', err.message || code);
         mockActive = true;
         return mockDb.query(sql, params);
       }
@@ -86,7 +86,7 @@ const db = {
         code === 'ENOTFOUND' ||
         code === 'ECONNRESET'
       ) {
-        console.log('[GovService-BD] MySQL server unreachable — using in-memory fallback.');
+        console.warn('[GovService-BD] MySQL connection failed, switching to fallback:', err.message || code);
         mockActive = true;
         return mockDb.withTransaction(fn);
       }
