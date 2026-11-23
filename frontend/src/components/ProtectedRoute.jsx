@@ -6,7 +6,6 @@ function ProtectedRoute({ children, requireAdmin = false }) {
   const { isAuthenticated, isAdmin, loading } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
-
   if (loading) {
     return (
       <div className="container py-5 text-center">
@@ -14,11 +13,9 @@ function ProtectedRoute({ children, requireAdmin = false }) {
       </div>
     );
   }
-
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
-
   if (requireAdmin && !isAdmin) {
     return (
       <div className="container py-5 text-center">
@@ -29,6 +26,8 @@ function ProtectedRoute({ children, requireAdmin = false }) {
       </div>
     );
   }
+
+ 
 
   return children;
 }
